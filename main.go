@@ -15,14 +15,18 @@ func main() {
 	profilePath = getProfilePath()
 
 	err := (*createUI()).Run()
-	checkErr(err)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func getProfilePath() string {
 	var iniPath string
 
 	homedir, err := homedir.Dir()
-	checkErr(err)
+	if err != nil {
+		panic(err)
+	}
 
 	switch runtime.GOOS {
 	case "windows":
@@ -39,7 +43,9 @@ func getProfilePath() string {
 	}
 
 	file, err := ini.Load(iniPath)
-	checkErr(err)
+	if err != nil {
+		panic(err)
+	}
 
 	for _, section := range file.Sections() {
 		if section.Key("Default").MustInt(0) == 1 {
@@ -53,5 +59,5 @@ func getProfilePath() string {
 		}
 	}
 
-	panic("The default profile couln't be found in profiles.ini")
+	panic("A default profile couln't be found in profiles.ini")
 }

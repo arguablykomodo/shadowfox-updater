@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -29,19 +28,19 @@ func pathExists(path string) bool {
 	if os.IsNotExist(err) {
 		return false
 	}
-	checkErr(err)
+	checkErr("", err)
 	return true
 }
 
-func install() error {
+func install() (string, error) {
 	userChrome, err := downloadFile("userChrome.css")
 	if err != nil {
-		return errors.New("userChrome.css couln't be downloaded: " + err.Error())
+		return "userChrome.css couln't be downloaded", err
 	}
 
 	userContent, err := downloadFile("userContent.css")
 	if err != nil {
-		return errors.New("userContent.css couln't be downloaded: " + err.Error())
+		return "userContent.css couln't be downloaded", err
 	}
 
 	if !pathExists(filepath.Join(profilePath, "chrome")) {
@@ -60,9 +59,15 @@ func install() error {
 	}
 
 	ioutil.WriteFile(userChromePath, userChrome, 0644)
-	checkErr(err)
-	ioutil.WriteFile(userContentPath, userContent, 0644)
-	checkErr(err)
+	if err != nil {
+		return "Couln't write userChrome.css to file", err
+	}
 
-	return nil
+	ioutil.WriteFile(userContentPath, userContent, 0644)
+	if err != nil {
+		return "Couln't write userContent.css to file", err
+	}
+
+	go func() { infoLabel.SetText("ShadowFox has been succesfully installed") }()
+	return "", nil
 }

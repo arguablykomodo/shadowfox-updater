@@ -1,7 +1,12 @@
 package main
 
-func checkErr(err error) {
+func checkErr(message string, err error) {
 	if err != nil {
-		panic(err)
+		infoLabel.SetStyleName("error")
+		if message != "" {
+			infoLabel.SetText(message + ": " + err.Error())
+		} else {
+			infoLabel.SetText(err.Error())
+		}
 	}
 }

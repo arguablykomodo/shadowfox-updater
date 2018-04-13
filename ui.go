@@ -45,19 +45,17 @@ func createUI() *tui.UI {
 	)
 
 	ui, err := tui.New(root)
-	checkErr(err)
+	if err != nil {
+		panic(err)
+	}
 
 	ui.SetTheme(theme)
 	ui.SetKeybinding("Esc", func() { ui.Quit() })
 	tui.DefaultFocusChain.Set(installButton, uninstallButton)
 
 	installButton.OnActivated(func(b *tui.Button) {
-		err := install()
-		if err != nil {
-			infoLabel.SetStyleName("error")
-			infoLabel.SetText(err.Error())
-		}
-		infoLabel.SetText("ShadowFox has been succesfully installed/updated")
+		message, err := install()
+		checkErr(message, err)
 	})
 
 	return &ui
