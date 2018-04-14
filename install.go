@@ -23,16 +23,18 @@ func downloadFile(file string) ([]byte, error) {
 	return data, nil
 }
 
-func pathExists(path string) bool {
+func pathExists(path string) (bool, error) {
 	_, err := os.Stat(path)
 	if os.IsNotExist(err) {
-		return false
+		return false, nil
 	}
-	checkErr("", err)
-	return true
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
-func install() (string, error) {
+func install(profilePath string) (string, error) {
 	userChrome, err := downloadFile("userChrome.css")
 	if err != nil {
 		return "userChrome.css couln't be downloaded", err
@@ -43,31 +45,51 @@ func install() (string, error) {
 		return "userContent.css couln't be downloaded", err
 	}
 
-	if !pathExists(filepath.Join(profilePath, "chrome")) {
-		os.Mkdir(filepath.Join(profilePath, "chrome"), 0644)
+	chromeExists, err := pathExists(filepath.Join(profilePath, "chrome"))
+	if err != nil {
+		return "", err
+	}
+	if !chromeExists {
+		err := os.Mkdir(filepath.Join(profilePath, "chrome"), 0644)
+		if err != nil {
+			return "", err
+		}
 	}
 
 	userChromePath := filepath.Join(profilePath, "chrome", "userChrome.css")
 	userContentPath := filepath.Join(profilePath, "chrome", "userContent.css")
 
-	if pathExists(userChromePath) {
-		os.Rename(userChromePath, userChromePath+".old")
+	userChromeExits, err := pathExists(userChromePath)
+	if err != nil {
+		return "", err
+	}
+	if userChromeExits {
+		err := os.Rename(userChromePath, userChromePath+".old")
+		if err != nil {
+			return "Couln't backup old userChrome.css", err
+		}
 	}
 
-	if pathExists(userContentPath) {
-		os.Rename(userContentPath, userContentPath+".old")
+	userContentExits, err := pathExists(userContentPath)
+	if err != nil {
+		return "", err
+	}
+	if userContentExits {
+		err := os.Rename(userContentPath, userContentPath+".old")
+		if err != nil {
+			return "Couln't backup old userContent.css", err
+		}
 	}
 
-	ioutil.WriteFile(userChromePath, userChrome, 0644)
+	err = ioutil.WriteFile(userChromePath, userChrome, 0644)
 	if err != nil {
 		return "Couln't write userChrome.css to file", err
 	}
 
-	ioutil.WriteFile(userContentPath, userContent, 0644)
+	err = ioutil.WriteFile(userContentPath, userContent, 0644)
 	if err != nil {
 		return "Couln't write userContent.css to file", err
 	}
 
-	go func() { infoLabel.SetText("ShadowFox has been succesfully installed") }()
 	return "", nil
 }
