@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"path/filepath"
 	"runtime"
 
@@ -47,7 +48,12 @@ func createUI() {
 	})
 
 	uninstallButton := tview.NewButton("Uninstall ShadowFox").SetSelectedFunc(func() {
-
+		err := os.RemoveAll(filepath.Join(paths[profileIndex], "chrome"))
+		if err != nil {
+			notifyErr("Couln't uninstall ShadowFox", err)
+		} else {
+			infoText.SetText("Shadowfox was succesfully uninstalled!")
+		}
 	})
 
 	exitButton := tview.NewButton("Exit").SetSelectedFunc(func() {
