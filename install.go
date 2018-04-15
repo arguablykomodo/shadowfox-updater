@@ -59,22 +59,22 @@ func install(profilePath string) (string, error) {
 	userChromePath := filepath.Join(profilePath, "chrome", "userChrome.css")
 	userContentPath := filepath.Join(profilePath, "chrome", "userContent.css")
 
-	userChromeExits, err := pathExists(userChromePath)
+	userChromeExists, err := pathExists(userChromePath)
 	if err != nil {
 		return "", err
 	}
-	if userChromeExits {
+	if userChromeExists {
 		err := os.Rename(userChromePath, userChromePath+".old")
 		if err != nil {
 			return "Couln't backup old userChrome.css", err
 		}
 	}
 
-	userContentExits, err := pathExists(userContentPath)
+	userContentExists, err := pathExists(userContentPath)
 	if err != nil {
 		return "", err
 	}
-	if userContentExits {
+	if userContentExists {
 		err := os.Rename(userContentPath, userContentPath+".old")
 		if err != nil {
 			return "Couln't backup old userContent.css", err
