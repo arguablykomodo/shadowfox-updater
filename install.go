@@ -139,6 +139,22 @@ func install(profilePath string) (string, error) {
 		userContent = addColorOverrides(userContent, string(colors))
 	}
 
+	chromeCustom, err := ioutil.ReadFile(filepath.Join(customPath, "userChrome_customization.css"))
+	if err != nil {
+		return "Couln't read userChrome_customization.css", err
+	}
+	if len(chromeCustom) != 0 {
+		userChrome = userChrome + string(chromeCustom)
+	}
+
+	contentCustom, err := ioutil.ReadFile(filepath.Join(customPath, "userContent_customization.css"))
+	if err != nil {
+		return "Couln't read userContent_customization.css", err
+	}
+	if len(chromeCustom) != 0 {
+		userContent = userContent + string(contentCustom)
+	}
+
 	// Write new files
 	if err := ioutil.WriteFile(userChromePath, []byte(userChrome), 0644); err != nil {
 		return "Couln't write userChrome.css to file", err
