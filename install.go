@@ -5,22 +5,23 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
-func downloadFile(file string) ([]byte, error) {
+func downloadFile(file string) (string, error) {
 	resp, err := http.Get("https://raw.githubusercontent.com/overdodactyl/ShadowFox/master/" + file)
 
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
 	defer resp.Body.Close()
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 
-	return data, nil
+	return string(data), nil
 }
 
 func pathExists(path string) (bool, error) {
@@ -76,6 +77,12 @@ func createDir(path string) error {
 	return nil
 }
 
+func addColorOverrides(source, colors string) string {
+	startI := strings.Index(source, "--start-indicator-for-updater-scripts: black;")
+	endI := strings.Index(source, "--end-indicator-for-updater-scripts: black;") + 43
+	return source[:startI] + colors + source[endI:]
+}
+
 func install(profilePath string) (string, error) {
 	// Helper variables to keep things DRY
 	chromePath := filepath.Join(profilePath, "chrome")
@@ -123,11 +130,20 @@ func install(profilePath string) (string, error) {
 		return "Couln't backup userContent.css", err
 	}
 
+	colors, err := ioutil.ReadFile(filepath.Join(customPath, "colorOverrides.css"))
+	if err != nil {
+		return "Couln't read colorOverrides.css", err
+	}
+	if len(colors) != 0 {
+		userChrome = addColorOverrides(userChrome, string(colors))
+		userContent = addColorOverrides(userContent, string(colors))
+	}
+
 	// Write new files
-	if err := ioutil.WriteFile(userChromePath, userChrome, 0644); err != nil {
+	if err := ioutil.WriteFile(userChromePath, []byte(userChrome), 0644); err != nil {
 		return "Couln't write userChrome.css to file", err
 	}
-	if err := ioutil.WriteFile(userContentPath, userContent, 0644); err != nil {
+	if err := ioutil.WriteFile(userContentPath, []byte(userContent), 0644); err != nil {
 		return "Couln't write userContent.css to file", err
 	}
 
