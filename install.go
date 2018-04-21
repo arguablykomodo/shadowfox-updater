@@ -104,6 +104,9 @@ func install(profilePath string) (string, error) {
 	if err := createFile(filepath.Join(customPath, "colorOverrides.css")); err != nil {
 		return "Couldn't create colorOverrides.css", err
 	}
+	if err := createFile(filepath.Join(customPath, "internal_UUIDs.txt")); err != nil {
+		return "Couldn't create internal_UUIDs.txt", err
+	}
 	if err := createFile(filepath.Join(customPath, "userContent_customization.css")); err != nil {
 		return "Couldn't create userContent_customization.css", err
 	}
@@ -157,22 +160,40 @@ func install(profilePath string) (string, error) {
 	}
 
 	// Add UUIDs
-	prefsFile, err := ioutil.ReadFile(filepath.Join(profilePath, "prefs.js"))
+	uuidFile, err := ioutil.ReadFile(filepath.Join(customPath, "internal_UUIDs.txt"))
 	if err != nil {
-		return "Couldn't read prefs.js", err
+		return "Couldn't read internal_UUIDs.txt", err
 	}
-	prefsString := strings.Replace(
-		regexp.MustCompile("extensions\\.webextensions\\.uuids\\\", \\\"(.+)\\\"\\);").
-			FindStringSubmatch(string(prefsFile))[1],
-		"\\", "", -1,
-	)
-	var prefsJSON map[string]string
-	err = json.Unmarshal([]byte(prefsString), &prefsJSON)
+	if len(uuidFile) == 0 {
+		prefsFile, err := ioutil.ReadFile(filepath.Join(profilePath, "prefs.js"))
+		if err != nil {
+			return "Couldn't read prefs.js", err
+		}
+		prefsString := strings.Replace(
+			regexp.MustCompile("extensions\\.webextensions\\.uuids\\\", \\\"(.+)\\\"\\);").
+				FindStringSubmatch(string(prefsFile))[1],
+			"\\", "", -1,
+		)
+		var prefsJSON map[string]string
+		err = json.Unmarshal([]byte(prefsString), &prefsJSON)
+		if err != nil {
+			return "Couldn't parse prefs.js", err
+		}
+		newUUIDFile := ""
+		for key, value := range prefsJSON {
+			newUUIDFile += key + "=" + value + "\n"
+		}
+		if err := ioutil.WriteFile(filepath.Join(customPath, "internal_UUIDs.txt"), []byte(newUUIDFile), 0644); err != nil {
+			return "Couldn't write internal_UUIDs.txt to file", err
+		}
+	}
+	uuidFile, err = ioutil.ReadFile(filepath.Join(customPath, "internal_UUIDs.txt"))
 	if err != nil {
-		return "Couldn't parse prefs.js", err
+		return "Couldn't read internal_UUIDs.txt tp file", err
 	}
-	for key, value := range prefsJSON {
-		userContent = strings.Replace(userContent, key, value, -1)
+	pairs := regexp.MustCompile("(.+)=(.+)").FindAllStringSubmatch(string(uuidFile), -1)
+	for _, key := range pairs {
+		userContent = strings.Replace(userContent, key[1], key[2], -1)
 	}
 
 	// Write new files
