@@ -1,10 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strings"
 )
 
@@ -102,9 +104,6 @@ func install(profilePath string) (string, error) {
 	if err := createFile(filepath.Join(customPath, "colorOverrides.css")); err != nil {
 		return "Couldn't create colorOverrides.css", err
 	}
-	if err := createFile(filepath.Join(customPath, "internal_UUIDs.txt")); err != nil {
-		return "Couldn't create internal_UUIDs.txt", err
-	}
 	if err := createFile(filepath.Join(customPath, "userContent_customization.css")); err != nil {
 		return "Couldn't create userContent_customization.css", err
 	}
@@ -155,6 +154,25 @@ func install(profilePath string) (string, error) {
 	}
 	if len(chromeCustom) != 0 {
 		userContent = userContent + string(contentCustom)
+	}
+
+	// Add UUIDs
+	prefsFile, err := ioutil.ReadFile(filepath.Join(profilePath, "prefs.js"))
+	if err != nil {
+		return "Couldn't read prefs.js", err
+	}
+	prefsString := strings.Replace(
+		regexp.MustCompile("extensions\\.webextensions\\.uuids\\\", \\\"(.+)\\\"\\);").
+			FindStringSubmatch(string(prefsFile))[1],
+		"\\", "", -1,
+	)
+	var prefsJSON map[string]string
+	err = json.Unmarshal([]byte(prefsString), &prefsJSON)
+	if err != nil {
+		return "Couldn't parse prefs.js", err
+	}
+	for key, value := range prefsJSON {
+		userContent = strings.Replace(userContent, key, value, -1)
 	}
 
 	// Write new files
