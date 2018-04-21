@@ -92,47 +92,47 @@ func install(profilePath string) (string, error) {
 
 	// Create dirs
 	if err := createDir(chromePath); err != nil {
-		return "Couln't create chrome folder", err
+		return "Couldn't create chrome folder", err
 	}
 	if err := createDir(customPath); err != nil {
-		return "Couln't create ShadowFox_customization folder", err
+		return "Couldn't create ShadowFox_customization folder", err
 	}
 
 	// Create customization files
 	if err := createFile(filepath.Join(customPath, "colorOverrides.css")); err != nil {
-		return "Couln't create colorOverrides.css", err
+		return "Couldn't create colorOverrides.css", err
 	}
 	if err := createFile(filepath.Join(customPath, "internal_UUIDs.txt")); err != nil {
-		return "Couln't create internal_UUIDs.txt", err
+		return "Couldn't create internal_UUIDs.txt", err
 	}
 	if err := createFile(filepath.Join(customPath, "userContent_customization.css")); err != nil {
-		return "Couln't create userContent_customization.css", err
+		return "Couldn't create userContent_customization.css", err
 	}
 	if err := createFile(filepath.Join(customPath, "userChrome_customization.css")); err != nil {
-		return "Couln't create userChrome_customization.css", err
+		return "Couldn't create userChrome_customization.css", err
 	}
 
 	// Download files
 	userChrome, err := downloadFile("userChrome.css")
 	if err != nil {
-		return "userChrome.css couln't be downloaded", err
+		return "userChrome.css Couldn't be downloaded", err
 	}
 	userContent, err := downloadFile("userContent.css")
 	if err != nil {
-		return "userContent.css couln't be downloaded", err
+		return "userContent.css Couldn't be downloaded", err
 	}
 
 	// Backup old files
 	if err := backUp(userChromePath); err != nil {
-		return "Couln't backup userChrome.css", err
+		return "Couldn't backup userChrome.css", err
 	}
 	if err := backUp(userContentPath); err != nil {
-		return "Couln't backup userContent.css", err
+		return "Couldn't backup userContent.css", err
 	}
 
 	colors, err := ioutil.ReadFile(filepath.Join(customPath, "colorOverrides.css"))
 	if err != nil {
-		return "Couln't read colorOverrides.css", err
+		return "Couldn't read colorOverrides.css", err
 	}
 	if len(colors) != 0 {
 		userChrome = addColorOverrides(userChrome, string(colors))
@@ -141,7 +141,7 @@ func install(profilePath string) (string, error) {
 
 	chromeCustom, err := ioutil.ReadFile(filepath.Join(customPath, "userChrome_customization.css"))
 	if err != nil {
-		return "Couln't read userChrome_customization.css", err
+		return "Couldn't read userChrome_customization.css", err
 	}
 	if len(chromeCustom) != 0 {
 		userChrome = userChrome + string(chromeCustom)
@@ -149,7 +149,7 @@ func install(profilePath string) (string, error) {
 
 	contentCustom, err := ioutil.ReadFile(filepath.Join(customPath, "userContent_customization.css"))
 	if err != nil {
-		return "Couln't read userContent_customization.css", err
+		return "Couldn't read userContent_customization.css", err
 	}
 	if len(chromeCustom) != 0 {
 		userContent = userContent + string(contentCustom)
@@ -157,10 +157,10 @@ func install(profilePath string) (string, error) {
 
 	// Write new files
 	if err := ioutil.WriteFile(userChromePath, []byte(userChrome), 0644); err != nil {
-		return "Couln't write userChrome.css to file", err
+		return "Couldn't write userChrome.css to file", err
 	}
 	if err := ioutil.WriteFile(userContentPath, []byte(userContent), 0644); err != nil {
-		return "Couln't write userContent.css to file", err
+		return "Couldn't write userContent.css to file", err
 	}
 
 	return "", nil
