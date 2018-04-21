@@ -71,7 +71,7 @@ func createDir(path string) error {
 		return err
 	}
 	if !pathExists {
-		err := os.Mkdir(path, 0644)
+		err := os.Mkdir(path, 0700)
 		if err != nil {
 			return err
 		}
