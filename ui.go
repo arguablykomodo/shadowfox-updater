@@ -48,11 +48,21 @@ func createUI() {
 	})
 
 	uninstallButton := tview.NewButton("Uninstall ShadowFox").SetSelectedFunc(func() {
-		err := os.RemoveAll(filepath.Join(paths[profileIndex], "chrome"))
+		err := os.RemoveAll(filepath.Join(paths[profileIndex], "chrome", "ShadowFox_customization"))
 		if err != nil {
-			notifyErr("Couln't uninstall ShadowFox", err)
+			notifyErr("Couln't delete ShadowFox_customization", err)
 		} else {
-			infoText.SetText("Shadowfox was succesfully uninstalled!")
+			err := os.Remove(filepath.Join(paths[profileIndex], "chrome", "userChrome.css"))
+			if err != nil {
+				notifyErr("Couln't delete userChrome.css", err)
+			} else {
+				err := os.Remove(filepath.Join(paths[profileIndex], "chrome", "userContent.css"))
+				if err != nil {
+					notifyErr("Couln't delete userContent.css", err)
+				} else {
+					infoText.SetText("Shadowfox was succesfully uninstalled!")
+				}
+			}
 		}
 	})
 
