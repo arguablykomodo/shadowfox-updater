@@ -54,8 +54,10 @@ func createUI() {
 		profileIndex = index
 	})
 
+	uuidCheckBox := tview.NewCheckbox().SetLabel("Auto-Generate UUIDs: ").SetChecked(true)
+
 	installButton := tview.NewButton("Install/Update ShadowFox").SetSelectedFunc(func() {
-		message, err := install(paths[profileIndex])
+		message, err := install(paths[profileIndex], uuidCheckBox.IsChecked())
 		if err != nil {
 			notifyErr(message, err)
 		} else {
@@ -78,6 +80,13 @@ func createUI() {
 
 	// Setup input so that TAB switches between buttons
 	profileSelect.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
+		if event.Key() == tcell.KeyTAB {
+			app.SetFocus(uuidCheckBox)
+		}
+		return event
+	})
+
+	uuidCheckBox.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if event.Key() == tcell.KeyTAB {
 			app.SetFocus(installButton)
 		}
@@ -109,6 +118,12 @@ func createUI() {
 		AddItem(tview.NewFlex().
 			AddItem(nil, 0, 1, false).
 			AddItem(profileSelect, 0, 10, true).
+			AddItem(nil, 0, 1, false), 1, 0, true,
+		).
+		AddItem(nil, 1, 0, false).
+		AddItem(tview.NewFlex().
+			AddItem(nil, 0, 1, false).
+			AddItem(uuidCheckBox, 0, 10, true).
 			AddItem(nil, 0, 1, false), 1, 0, true,
 		).
 		AddItem(nil, 1, 0, false).

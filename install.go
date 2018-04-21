@@ -85,7 +85,7 @@ func addColorOverrides(source, colors string) string {
 	return source[:startI] + colors + source[endI:]
 }
 
-func install(profilePath string) (string, error) {
+func install(profilePath string, generateUUIDs bool) (string, error) {
 	// Helper variables to keep things DRY
 	chromePath := filepath.Join(profilePath, "chrome")
 	customPath := filepath.Join(chromePath, "ShadowFox_customization")
@@ -164,7 +164,7 @@ func install(profilePath string) (string, error) {
 	if err != nil {
 		return "Couldn't read internal_UUIDs.txt", err
 	}
-	if len(uuidFile) == 0 {
+	if generateUUIDs {
 		prefsFile, err := ioutil.ReadFile(filepath.Join(profilePath, "prefs.js"))
 		if err != nil {
 			return "Couldn't read prefs.js", err
@@ -182,18 +182,16 @@ func install(profilePath string) (string, error) {
 		newUUIDFile := ""
 		for key, value := range prefsJSON {
 			newUUIDFile += key + "=" + value + "\n"
+			userContent = strings.Replace(userContent, key, value, -1)
 		}
 		if err := ioutil.WriteFile(filepath.Join(customPath, "internal_UUIDs.txt"), []byte(newUUIDFile), 0644); err != nil {
 			return "Couldn't write internal_UUIDs.txt to file", err
 		}
-	}
-	uuidFile, err = ioutil.ReadFile(filepath.Join(customPath, "internal_UUIDs.txt"))
-	if err != nil {
-		return "Couldn't read internal_UUIDs.txt tp file", err
-	}
-	pairs := regexp.MustCompile("(.+)=(.+)").FindAllStringSubmatch(string(uuidFile), -1)
-	for _, key := range pairs {
-		userContent = strings.Replace(userContent, key[1], key[2], -1)
+	} else {
+		pairs := regexp.MustCompile("(.+)=(.+)").FindAllStringSubmatch(string(uuidFile), -1)
+		for _, key := range pairs {
+			userContent = strings.Replace(userContent, key[1], key[2], -1)
+		}
 	}
 
 	// Write new files
