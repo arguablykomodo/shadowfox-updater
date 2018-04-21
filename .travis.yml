@@ -2,7 +2,7 @@ language: go
 go:
   - "1.10"
 before_script:
-  - go get gox
+  - go get github.com/mitchellh/gox
 script: gox -os="windows darwin linux" -output="dist/{{.Dir}}_{{.OS}}_{{.Arch}}"
 deploy:
   provider: releases
