@@ -130,6 +130,7 @@ func install(profilePath string) (string, error) {
 		return "Couldn't backup userContent.css", err
 	}
 
+	// Add color overrides
 	colors, err := ioutil.ReadFile(filepath.Join(customPath, "colorOverrides.css"))
 	if err != nil {
 		return "Couldn't read colorOverrides.css", err
@@ -139,6 +140,7 @@ func install(profilePath string) (string, error) {
 		userContent = addColorOverrides(userContent, string(colors))
 	}
 
+	// Add customization files
 	chromeCustom, err := ioutil.ReadFile(filepath.Join(customPath, "userChrome_customization.css"))
 	if err != nil {
 		return "Couldn't read userChrome_customization.css", err
