@@ -125,7 +125,7 @@ func getProfilePaths() []string {
 		iniPath = homedir + "\\AppData\\Roaming\\Mozilla\\Firefox\\profiles.ini"
 
 	case "darwin":
-		iniPath = homedir + "/Library/Mozilla/profiles.ini"
+		iniPath = homedir + "/Library/Application Support/Firefox/profiles.ini"
 
 	case "linux":
 		iniPath = homedir + "/.mozilla/profiles.ini"
