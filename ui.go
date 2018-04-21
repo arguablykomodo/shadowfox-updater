@@ -24,6 +24,22 @@ func notifyErr(message string, err error) {
 	}
 }
 
+func uninstall(profile string) (string, error) {
+	err := os.RemoveAll(filepath.Join(profile, "chrome", "ShadowFox_customization"))
+	if err != nil {
+		return "Couldn't delete ShadowFox_customization", err
+	}
+	err = os.Remove(filepath.Join(profile, "chrome", "userChrome.css"))
+	if err != nil {
+		return "Couln't delete userChrome.css", err
+	}
+	err = os.Remove(filepath.Join(profile, "chrome", "userContent.css"))
+	if err != nil {
+		return "Couln't delete userContent.css", err
+	}
+	return "", nil
+}
+
 func createUI() {
 	app := tview.NewApplication()
 	paths := getProfilePaths()
@@ -48,21 +64,11 @@ func createUI() {
 	})
 
 	uninstallButton := tview.NewButton("Uninstall ShadowFox").SetSelectedFunc(func() {
-		err := os.RemoveAll(filepath.Join(paths[profileIndex], "chrome", "ShadowFox_customization"))
+		message, err := uninstall(paths[profileIndex])
 		if err != nil {
-			notifyErr("Couln't delete ShadowFox_customization", err)
+			notifyErr(message, err)
 		} else {
-			err := os.Remove(filepath.Join(paths[profileIndex], "chrome", "userChrome.css"))
-			if err != nil {
-				notifyErr("Couln't delete userChrome.css", err)
-			} else {
-				err := os.Remove(filepath.Join(paths[profileIndex], "chrome", "userContent.css"))
-				if err != nil {
-					notifyErr("Couln't delete userContent.css", err)
-				} else {
-					infoText.SetText("Shadowfox was succesfully uninstalled!")
-				}
-			}
+			infoText.SetText("ShadowFox was succesfully uninstalled!")
 		}
 	})
 
