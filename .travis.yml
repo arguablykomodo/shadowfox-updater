@@ -1,0 +1,14 @@
+language: go
+go:
+  - "1.10"
+before_script:
+  - go get gox
+script: gox -os="windows darwin linux" -output="dist/{{.Dir}}_{{.OS}}_{{.Arch}}"
+deploy:
+  provider: releases
+  api_key: $KEY
+  skip_cleanup: true
+  file_glob: true
+  file: dist/**/*
+  on:
+    tags: true
