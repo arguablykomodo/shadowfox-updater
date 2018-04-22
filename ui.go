@@ -54,7 +54,7 @@ func createUI() {
 		profileIndex = index
 	})
 
-	uuidCheckBox := tview.NewCheckbox().SetLabel("Auto-Generate UUIDs: ").SetChecked(true)
+	uuidCheckBox := tview.NewCheckbox().SetLabel("Auto-Generate UUIDs: ").SetChecked(false)
 
 	installButton := tview.NewButton("Install/Update ShadowFox").SetSelectedFunc(func() {
 		message, err := install(paths[profileIndex], uuidCheckBox.IsChecked())
