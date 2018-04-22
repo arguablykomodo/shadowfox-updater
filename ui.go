@@ -81,35 +81,55 @@ func createUI() {
 	// Setup input so that TAB switches between buttons
 	profileSelect.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if event.Key() == tcell.KeyTAB {
-			app.SetFocus(uuidCheckBox)
+			if (event.Modifiers() & tcell.ModShift) == tcell.ModShift {
+				app.SetFocus(exitButton)
+			} else {
+				app.SetFocus(uuidCheckBox)
+			}
 		}
 		return event
 	})
 
 	uuidCheckBox.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if event.Key() == tcell.KeyTAB {
-			app.SetFocus(installButton)
+			if (event.Modifiers() & tcell.ModShift) == tcell.ModShift {
+				app.SetFocus(profileSelect)
+			} else {
+				app.SetFocus(installButton)
+			}
 		}
 		return event
 	})
 
 	installButton.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if event.Key() == tcell.KeyTAB {
-			app.SetFocus(uninstallButton)
+			if (event.Modifiers() & tcell.ModShift) == tcell.ModShift {
+				app.SetFocus(uuidCheckBox)
+			} else {
+				app.SetFocus(uninstallButton)
+			}
 		}
 		return event
 	})
 
 	uninstallButton.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if event.Key() == tcell.KeyTAB {
-			app.SetFocus(exitButton)
+			if (event.Modifiers() & tcell.ModShift) == tcell.ModShift {
+				app.SetFocus(installButton)
+			} else {
+				app.SetFocus(exitButton)
+			}
 		}
 		return event
 	})
 
 	exitButton.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
 		if event.Key() == tcell.KeyTAB {
-			app.SetFocus(profileSelect)
+			if (event.Modifiers() & tcell.ModShift) == tcell.ModShift {
+				app.SetFocus(uninstallButton)
+			} else {
+				app.SetFocus(profileSelect)
+			}
 		}
 		return event
 	})
