@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 )
 
 func downloadFile(file string) (string, error) {
@@ -43,7 +44,7 @@ func backUp(path string) error {
 		return err
 	}
 	if exists {
-		err := os.Rename(path, path+".old")
+		err := os.Rename(path, path+time.Now().Format(".2006-01-02-15-04-05.backup"))
 		if err != nil {
 			return err
 		}
@@ -165,6 +166,10 @@ func install(profilePath string, generateUUIDs bool) (string, error) {
 		return "Couldn't read internal_UUIDs.txt", err
 	}
 	if generateUUIDs {
+		err := backUp(filepath.Join(customPath, "internal_UUIDs.txt"))
+		if err != nil {
+			return "Couldn't backup internal_UUIDs.txt", err
+		}
 		prefsFile, err := ioutil.ReadFile(filepath.Join(profilePath, "prefs.js"))
 		if err != nil {
 			return "Couldn't read prefs.js", err
