@@ -3,7 +3,7 @@ go:
   - "1.10"
 before_script:
   - go get github.com/mitchellh/gox
-script: gox -os="windows darwin linux" -arch="amd64 386" -output="dist/{{.Dir}}_{{.OS}}_{{.Arch}}"
+script: gox -os="windows darwin linux" -arch="amd64 386" -output="dist/shadowfox_{{.OS}}_{{.Arch}}"
 deploy:
   provider: releases
   api_key: $KEY
