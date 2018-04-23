@@ -156,8 +156,8 @@ func createUI() {
 			AddItem(nil, 1, 0, false).
 			AddItem(exitButton, 0, 1, true), 3, 0, true,
 		)
+	flex.SetBorder(true).SetTitle("ShadowFox updater 1.4.0").SetBorderPadding(1, 1, 1, 1)
 
-	flex.SetBorder(true).SetTitle("ShadowFox updater 1.0.0").SetBorderPadding(1, 1, 1, 1)
 	if paths == nil {
 		info := tview.NewTextView().SetTextAlign(tview.AlignCenter)
 
@@ -218,7 +218,7 @@ func getProfilePaths(path string) []string {
 			iniPath = homedir + "/Library/Application Support/Firefox/profiles.ini"
 
 		case "linux":
-			iniPath = homedir + "/.mozilla/profiles.ini"
+			iniPath = homedir + "/.mozilla/firefox/profiles.ini"
 
 		default:
 			panic("Sorry, but this program only works on Windows, Mac OS, or Linux")
