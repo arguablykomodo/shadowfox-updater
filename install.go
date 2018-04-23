@@ -27,19 +27,19 @@ func downloadFile(file string) (string, error) {
 	return string(data), nil
 }
 
-func pathExists(path string) (bool, error) {
-	_, err := os.Stat(path)
+func pathExists(path string) (bool, bool, error) {
+	stats, err := os.Stat(path)
 	if os.IsNotExist(err) {
-		return false, nil
+		return false, false, nil
 	}
 	if err != nil {
-		return false, err
+		return false, false, err
 	}
-	return true, nil
+	return true, stats.IsDir(), nil
 }
 
 func backUp(path string) error {
-	exists, err := pathExists(path)
+	exists, _, err := pathExists(path)
 	if err != nil {
 		return err
 	}
@@ -53,7 +53,7 @@ func backUp(path string) error {
 }
 
 func createFile(path string) error {
-	exists, err := pathExists(path)
+	exists, _, err := pathExists(path)
 	if err != nil {
 		return err
 	}
@@ -67,7 +67,7 @@ func createFile(path string) error {
 }
 
 func createDir(path string) error {
-	pathExists, err := pathExists(path)
+	pathExists, _, err := pathExists(path)
 	if err != nil {
 		return err
 	}

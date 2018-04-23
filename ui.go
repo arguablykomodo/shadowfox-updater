@@ -42,7 +42,7 @@ func uninstall(profile string) (string, error) {
 
 func createUI() {
 	app := tview.NewApplication()
-	paths := getProfilePaths()
+	paths := getProfilePaths("")
 	profileIndex := 0
 
 	infoText = tview.NewTextView()
@@ -158,31 +158,81 @@ func createUI() {
 		)
 
 	flex.SetBorder(true).SetTitle("ShadowFox updater 1.0.0").SetBorderPadding(1, 1, 1, 1)
-	if err := app.SetRoot(flex, true).SetFocus(profileSelect).Run(); err != nil {
+	if paths == nil {
+		info := tview.NewTextView().SetTextAlign(tview.AlignCenter)
+
+		pathInput := tview.NewInputField()
+		pathInput.SetDoneFunc(func(key tcell.Key) {
+			exists, isDir, err := pathExists(pathInput.GetText())
+			if err != nil {
+				info.SetText("Invalid path, try again")
+			}
+			switch {
+			case !exists:
+				info.SetText("Path doesn't exist, try again")
+			case isDir:
+				info.SetText("Path isn't a file, try again\nMake sure you are typing profiles.ini's path, not the dir it is in")
+			default:
+				paths = getProfilePaths(pathInput.GetText())
+				profileSelect.SetOptions(paths, func(text string, index int) {
+					profileIndex = index
+				})
+				app.SetRoot(flex, true).SetFocus(profileSelect)
+			}
+		})
+
+		modal := tview.NewFlex().SetDirection(tview.FlexRow).
+			AddItem(tview.NewTextView().SetText("profiles.ini couldn't be found").SetTextAlign(tview.AlignCenter), 1, 0, false).
+			AddItem(tview.NewTextView().SetText("Please input the path to profiles.ini").SetTextAlign(tview.AlignCenter), 1, 0, false).
+			AddItem(nil, 1, 0, false).
+			AddItem(info, 2, 0, false).
+			AddItem(nil, 1, 0, false).
+			AddItem(pathInput, 1, 0, false)
+
+		modal.SetBorder(true).SetBorderPadding(1, 1, 1, 1)
+
+		app.SetRoot(modal, true).SetFocus(pathInput)
+	} else {
+		app.SetRoot(flex, true).SetFocus(profileSelect)
+	}
+
+	if err := app.Run(); err != nil {
 		panic(err)
 	}
 }
 
-func getProfilePaths() []string {
+func getProfilePaths(path string) []string {
 	var iniPath string
 
-	homedir, err := homedir.Dir()
-	if err != nil {
-		panic(err)
-	}
+	if path == "" {
+		homedir, err := homedir.Dir()
+		if err != nil {
+			panic(err)
+		}
 
-	switch runtime.GOOS {
-	case "windows":
-		iniPath = homedir + "\\AppData\\Roaming\\Mozilla\\Firefox\\profiles.ini"
+		switch runtime.GOOS {
+		case "windows":
+			iniPath = homedir + "\\AppData\\Roaming\\Mozilla\\Firefox\\profiles.ini"
 
-	case "darwin":
-		iniPath = homedir + "/Library/Application Support/Firefox/profiles.ini"
+		case "darwin":
+			iniPath = homedir + "/Library/Application Support/Firefox/profiles.ini"
 
-	case "linux":
-		iniPath = homedir + "/.mozilla/profiles.ini"
+		case "linux":
+			iniPath = homedir + "/.mozilla/profiles.ini"
 
-	default:
-		panic("Sorry, but this program only works on Windows, Mac OS, or Linux")
+		default:
+			panic("Sorry, but this program only works on Windows, Mac OS, or Linux")
+		}
+
+		exists, _, err := pathExists(iniPath)
+		if err != nil {
+			panic(err)
+		}
+		if !exists {
+			return nil
+		}
+	} else {
+		iniPath = path
 	}
 
 	file, err := ini.Load(iniPath)
