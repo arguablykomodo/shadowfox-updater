@@ -42,7 +42,7 @@ func uninstall(profile string) (string, error) {
 
 func createUI() {
 	app := tview.NewApplication()
-	paths := getProfilePaths()
+	paths, names := getProfilePaths()
 	profileIndex := 0
 
 	infoText = tview.NewTextView()
@@ -50,7 +50,7 @@ func createUI() {
 	infoText.SetTextAlign(tview.AlignCenter)
 
 	// Create buttons
-	profileSelect := tview.NewDropDown().SetLabel("Profile to use: ").SetOptions(paths, func(text string, index int) {
+	profileSelect := tview.NewDropDown().SetLabel("Profile to use: ").SetOptions(names, func(text string, index int) {
 		profileIndex = index
 	})
 
@@ -178,7 +178,7 @@ func createUI() {
 	}
 }
 
-func getProfilePaths() []string {
+func getProfilePaths() ([]string, []string) {
 	var iniPath string
 
 	cwd, err := os.Executable()
@@ -215,7 +215,7 @@ func getProfilePaths() []string {
 			panic(err)
 		}
 		if !exists {
-			return nil
+			return nil, nil
 		}
 	} else {
 		iniPath = filepath.Join(filepath.Dir(cwd), "profiles.ini")
@@ -227,6 +227,7 @@ func getProfilePaths() []string {
 	}
 
 	var paths []string
+	var names []string
 	for _, section := range file.Sections() {
 		if key, err := section.GetKey("Path"); err == nil {
 			path := key.String()
@@ -237,7 +238,8 @@ func getProfilePaths() []string {
 			} else {
 				paths = append(paths, path)
 			}
+			names = append(names, filepath.Base(path))
 		}
 	}
-	return paths
+	return paths, names
 }
