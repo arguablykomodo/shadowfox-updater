@@ -11,6 +11,22 @@ import (
 	"time"
 )
 
+func uninstall(profile string) (string, error) {
+	err := os.RemoveAll(filepath.Join(profile, "chrome", "ShadowFox_customization"))
+	if err != nil {
+		return "Couldn't delete ShadowFox_customization", err
+	}
+	err = os.Remove(filepath.Join(profile, "chrome", "userChrome.css"))
+	if err != nil {
+		return "Couln't delete userChrome.css", err
+	}
+	err = os.Remove(filepath.Join(profile, "chrome", "userContent.css"))
+	if err != nil {
+		return "Couln't delete userContent.css", err
+	}
+	return "", nil
+}
+
 func downloadFile(file string) (string, error) {
 	resp, err := http.Get("https://raw.githubusercontent.com/overdodactyl/ShadowFox/master/" + file)
 
