@@ -18,7 +18,7 @@ func notifyErr(message string, err error) {
 	}
 }
 
-func createUI() {
+func createUI() error {
 	app := tview.NewApplication()
 	paths, names := getProfilePaths()
 	profileIndex := 0
@@ -152,6 +152,7 @@ func createUI() {
 	}
 
 	if err := app.Run(); err != nil {
-		panic(err)
+		return err
 	}
+	return nil
 }

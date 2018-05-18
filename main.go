@@ -1,5 +1,8 @@
 package main
 
 func main() {
-	createUI()
+	err := createUI()
+	if err != nil {
+		createFallbackUI()
+	}
 }
