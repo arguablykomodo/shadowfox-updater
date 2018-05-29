@@ -18,11 +18,11 @@ func uninstall(profile string) (string, error) {
 	}
 	err = os.Remove(filepath.Join(profile, "chrome", "userChrome.css"))
 	if err != nil {
-		return "Couln't delete userChrome.css", err
+		return "Couldn't delete userChrome.css", err
 	}
 	err = os.Remove(filepath.Join(profile, "chrome", "userContent.css"))
 	if err != nil {
-		return "Couln't delete userContent.css", err
+		return "Couldn't delete userContent.css", err
 	}
 	return "", nil
 }

@@ -18,14 +18,14 @@ func createFallbackUI() {
 		return
 	}
 
-	fmt.Print("ShadowFox updater 1.5.0\n\n")
+	fmt.Print("ShadowFox updater 1.5.1\n\n")
 
 	fmt.Println("Available profiles:")
 	for i, name := range names {
 		fmt.Printf("  %d: %s\n", i, name)
 	}
 
-	fmt.Printf("\nWich one would you like to use? [%d-%d] ", 0, len(names)-1)
+	fmt.Printf("\nWhich one would you like to use? [%d-%d] ", 0, len(names)-1)
 
 	var profile string
 	for {
