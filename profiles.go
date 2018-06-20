@@ -21,35 +21,48 @@ func getProfilePaths() ([]string, []string) {
 	if err != nil {
 		panic(err)
 	}
-	if !exists {
+	if exists {
+		iniPath = filepath.Join(filepath.Dir(cwd), "profiles.ini")
+	} else {
 		homedir, err := homedir.Dir()
 		if err != nil {
 			panic(err)
 		}
 
+		var possible []string
+
 		switch runtime.GOOS {
 		case "windows":
-			iniPath = homedir + "\\AppData\\Roaming\\Mozilla\\Firefox\\profiles.ini"
+			possible = []string{homedir + "\\AppData\\Roaming\\Mozilla\\Firefox\\profiles.ini"}
 
 		case "darwin":
-			iniPath = homedir + "/Library/Application Support/Firefox/profiles.ini"
+			possible = []string{homedir + "/Library/Application Support/Firefox/profiles.ini"}
 
 		case "linux":
-			iniPath = homedir + "/.mozilla/firefox/profiles.ini"
+			possible = []string{
+				homedir + "/.mozilla/firefox/profiles.ini",
+				homedir + "/.mozilla/firefox-trunk/profiles.ini",
+			}
 
 		default:
 			panic("Sorry, but this program only works on Windows, Mac OS, or Linux")
 		}
 
-		exists, _, err := pathExists(iniPath)
-		if err != nil {
-			panic(err)
+		found := false
+		for _, p := range possible {
+			exists, _, err := pathExists(p)
+			if err != nil {
+				panic(err)
+			}
+			if exists {
+				iniPath = p
+				found = true
+				break
+			}
 		}
-		if !exists {
+		if !found {
 			return nil, nil
 		}
-	} else {
-		iniPath = filepath.Join(filepath.Dir(cwd), "profiles.ini")
 	}
 
 	file, err := ini.Load(iniPath)

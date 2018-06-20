@@ -134,7 +134,7 @@ func createUI() error {
 			AddItem(nil, 1, 0, false).
 			AddItem(exitButton, 0, 1, true), 3, 0, true,
 		)
-	flex.SetBorder(true).SetTitle("ShadowFox updater 1.5.1").SetBorderPadding(1, 1, 1, 1)
+	flex.SetBorder(true).SetTitle("ShadowFox updater 1.5.2").SetBorderPadding(1, 1, 1, 1)
 
 	if paths == nil {
 		text := tview.NewTextView().SetText(
@@ -144,7 +144,7 @@ func createUI() error {
 				"3. Run the program                                         ",
 		).SetTextAlign(tview.AlignCenter)
 
-		text.SetBorder(true).SetTitle("ShadowFox updater 1.5.1").SetBorderPadding(1, 1, 1, 1)
+		text.SetBorder(true).SetTitle("ShadowFox updater 1.5.2").SetBorderPadding(1, 1, 1, 1)
 
 		app.SetRoot(text, true)
 	} else {
