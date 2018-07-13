@@ -11,7 +11,7 @@ import (
 
 func getProfilePaths() ([]string, []string) {
 	// iniPaths stores all profiles.ini files we have to check
-	var iniPaths []string
+	iniPaths := []string{}
 
 	// Find current directory
 	cwd, err := os.Executable()
@@ -34,7 +34,7 @@ func getProfilePaths() ([]string, []string) {
 		}
 
 		// Possible places where we should check for profiles.ini
-		var possible []string
+		possible := []string{}
 
 		switch runtime.GOOS {
 		case "windows":
