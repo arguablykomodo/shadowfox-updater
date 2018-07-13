@@ -26,3 +26,4 @@ _testmain.go
 
 .vscode
 dist
+*.syso
