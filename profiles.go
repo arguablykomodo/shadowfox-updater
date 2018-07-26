@@ -1,13 +1,23 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 
 	"github.com/go-ini/ini"
 	homedir "github.com/mitchellh/go-homedir"
 )
+
+func checkErr(msg string, err error) {
+	if err != nil {
+		fmt.Printf("%s: %s", msg, err)
+		fmt.Println("You should probably report this crash in https://github.com/SrKomodo/shadowfox-updater/issues/new")
+		fmt.Println("Press enter to close the program")
+		fmt.Scanln()
+		panic(err)
+	}
+}
 
 func getProfilePaths() ([]string, []string) {
 	// iniPaths stores all profiles.ini files we have to check
@@ -15,50 +25,30 @@ func getProfilePaths() ([]string, []string) {
 
 	// Find current directory
 	cwd, err := os.Executable()
-	if err != nil {
-		panic(err)
-	}
+	checkErr("Couldn't find current directory", err)
 
 	// Check if profiles.ini exists in the cwd
 	exists, _, err := pathExists(filepath.Join(filepath.Dir(cwd), "profiles.ini"))
-	if err != nil {
-		panic(err)
-	}
+	checkErr("Couldn't check if profiles.ini exists in current directory", err)
 	if exists { // If it does we just stop here
 		iniPaths = []string{filepath.Join(filepath.Dir(cwd), "profiles.ini")}
 	} else { // If not we will do some more stuff
 		// Get the home directory
 		homedir, err := homedir.Dir()
-		if err != nil {
-			panic(err)
-		}
+		checkErr("Coudln't find home directory", err)
 
 		// Possible places where we should check for profiles.ini
-		possible := []string{}
-
-		switch runtime.GOOS {
-		case "windows":
-			possible = []string{homedir + "\\AppData\\Roaming\\Mozilla\\Firefox\\profiles.ini"}
-
-		case "darwin":
-			possible = []string{homedir + "/Library/Application Support/Firefox/profiles.ini"}
-
-		case "linux":
-			possible = []string{
-				homedir + "/.mozilla/firefox/profiles.ini",
-				homedir + "/.mozilla/firefox-trunk/profiles.ini",
-			}
-
-		default:
-			panic("Sorry, but this program only works on Windows, Mac OS, or Linux")
+		possible := []string{
+			homedir + "\\AppData\\Roaming\\Mozilla\\Firefox\\profiles.ini",
+			homedir + "/Library/Application Support/Firefox/profiles.ini",
+			homedir + "/.mozilla/firefox/profiles.ini",
+			homedir + "/.mozilla/firefox-trunk/profiles.ini",
 		}
 
 		// Check if profiles.ini exists on each possible path and add them to the list
 		for _, p := range possible {
 			exists, _, err := pathExists(p)
-			if err != nil {
-				panic(err)
-			}
+			checkErr("Couldn't check if "+p+" exists", err)
 			if exists {
 				iniPaths = append(iniPaths, p)
 				break
@@ -77,9 +67,7 @@ func getProfilePaths() ([]string, []string) {
 	// For each possible ini file
 	for _, p := range iniPaths {
 		file, err := ini.Load(p)
-		if err != nil {
-			panic(err)
-		}
+		checkErr("Could not read profiles.ini, make sure its encoded in UTF-8", err)
 
 		// Find the Path key and add it to the list
 		for _, section := range file.Sections() {
