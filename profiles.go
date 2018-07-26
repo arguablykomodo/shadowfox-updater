@@ -35,7 +35,7 @@ func getProfilePaths() ([]string, []string) {
 	} else { // If not we will do some more stuff
 		// Get the home directory
 		homedir, err := homedir.Dir()
-		checkErr("Coudln't find home directory", err)
+		checkErr("Couldn't find home directory", err)
 
 		// Possible places where we should check for profiles.ini
 		possible := []string{

@@ -39,7 +39,7 @@ func createUI() error {
 		if err != nil {
 			notifyErr(message, err)
 		} else {
-			infoText.SetText("ShadowFox was succesfully installed!")
+			infoText.SetText("ShadowFox was successfully installed!")
 		}
 	})
 
@@ -48,7 +48,7 @@ func createUI() error {
 		if err != nil {
 			notifyErr(message, err)
 		} else {
-			infoText.SetText("ShadowFox was succesfully uninstalled!")
+			infoText.SetText("ShadowFox was successfully uninstalled!")
 		}
 	})
 

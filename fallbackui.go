@@ -44,7 +44,7 @@ func createFallbackUI() {
 
 	if choice == "2" {
 		uninstall(profile)
-		fmt.Print("\nShadowFox was succesfully uninstalled! (Press 'enter' to exit)")
+		fmt.Print("\nShadowFox was successfully uninstalled! (Press 'enter' to exit)")
 		fmt.Scanln()
 		return
 	}
@@ -59,7 +59,7 @@ func createFallbackUI() {
 		return
 	}
 
-	fmt.Print("\nShadowFox was succesfully installed! (Press 'enter' to exit)")
+	fmt.Print("\nShadowFox was successfully installed! (Press 'enter' to exit)")
 	fmt.Scanln()
 	return
 }
