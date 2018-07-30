@@ -42,6 +42,7 @@ archive:
     amd64: x64
   files:
   - none*
+  format: binary
 checksum:
   name_template: 'checksums.txt'
 snapshot:
