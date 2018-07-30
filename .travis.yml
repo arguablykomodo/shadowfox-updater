@@ -2,12 +2,9 @@ language: go
 go:
   - "1.10"
 before_script: go get github.com/akavel/rsrc
-script: go run compiler/compiler.go
 deploy:
-  provider: releases
-  api_key: $KEY
+- provider: script
   skip_cleanup: true
-  file_glob: true
-  file: dist/**/*
+  script: curl -sL https://git.io/goreleaser | bash
   on:
     tags: true

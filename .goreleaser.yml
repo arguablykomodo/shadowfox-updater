@@ -1,0 +1,54 @@
+builds:
+  - binary: shadowfox
+    goos:
+    - darwin
+    - linux
+    goarch:
+    - 386
+    - amd64
+    env:
+    - CGO_ENABLED=0
+  - binary: shadowfox
+    goos:
+    - windows
+    goarch:
+    - 386
+    env:
+    - CGO_ENABLED=0
+    hooks:
+      pre: rsrc -manifest manifest.xml -arch 386 -o shadowfox.syso
+  - binary: shadowfox
+    goos:
+    - windows
+    goarch:
+    - amd64
+    env:
+    - CGO_ENABLED=0
+    hooks:
+      pre: rsrc -manifest manifest.xml -arch amd64 -o shadowfox.syso
+brew:
+  github:
+    owner: SrKomodo
+    name: homebrew-tap
+  folder: Formula
+  homepage: https://github.com/SrKomodo/shadowfox-updater
+  description: An automatic updater for ShadowFox
+archive:
+  replacements:
+    windows: Windows
+    darwin: MacOS
+    linux: Linux
+    386: x32
+    amd64: x64
+  files:
+  - none*
+checksum:
+  name_template: 'checksums.txt'
+snapshot:
+  name_template: "{{ .Tag }}-next"
+changelog:
+  sort: asc
+  filters:
+    exclude:
+    - '^docs:'
+    - '^test:'

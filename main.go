@@ -1,6 +1,6 @@
 package main
 
-const version = "1.5.6"
+var version = "dev"
 
 func main() {
 	err := createUI()
