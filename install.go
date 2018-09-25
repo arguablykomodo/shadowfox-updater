@@ -11,6 +11,10 @@ import (
 	"time"
 )
 
+const darkThemeConfig = `
+user_pref("lightweightThemes.selectedThemeID", "firefox-compact-dark@mozilla.org");
+user_pref("devtools.theme", "dark");`
+
 func uninstall(profile string) (string, error) {
 	err := os.RemoveAll(filepath.Join(profile, "chrome", "ShadowFox_customization"))
 	if err != nil {
@@ -102,7 +106,7 @@ func addColorOverrides(source, colors string) string {
 	return source[:startI] + colors + source[endI:]
 }
 
-func install(profilePath string, generateUUIDs bool) (string, error) {
+func install(profilePath string, generateUUIDs bool, setTheme bool) (string, error) {
 	// Helper variables to keep things DRY
 	chromePath := filepath.Join(profilePath, "chrome")
 	customPath := filepath.Join(chromePath, "ShadowFox_customization")
@@ -212,6 +216,33 @@ func install(profilePath string, generateUUIDs bool) (string, error) {
 		pairs := regexp.MustCompile("(.+)=(.+)").FindAllStringSubmatch(string(uuidFile), -1)
 		for _, key := range pairs {
 			userContent = strings.Replace(userContent, key[1], key[2], -1)
+		}
+	}
+
+	// Set dark theme
+	if setTheme {
+		userJs := filepath.Join(profilePath, "user.js")
+		err = backUp(userJs)
+		if err != nil {
+			return "Couldn't backup user.js", err
+		}
+
+		err = createFile(userJs)
+		if err != nil {
+			return "Couldn't create user.js", err
+		}
+
+		userJsContent, err := ioutil.ReadFile(userJs)
+		if err != nil {
+			return "Couldn't read user.js", err
+		}
+
+		if !strings.Contains(string(userJsContent), darkThemeConfig) {
+			userJsContent = append(userJsContent, []byte(darkThemeConfig)...)
+
+			if err := ioutil.WriteFile(userJs, userJsContent, 0644); err != nil {
+				return "Couldn't write user.js", err
+			}
 		}
 	}
 

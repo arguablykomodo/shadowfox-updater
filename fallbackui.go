@@ -51,8 +51,13 @@ func createFallbackUI() {
 
 	fmt.Print("\nWould you like to auto-generate UUIDs? [y/n] ")
 	fmt.Scanln(&choice)
+	uuids := (choice == "y" || choice == "Y")
 
-	message, err := install(profile, (choice == "y" || choice == "Y"))
+	fmt.Print("\nWould you like to automatically set the Firefox dark theme? [y/n] ")
+	fmt.Scanln(&choice)
+	theme := (choice == "y" || choice == "Y")
+
+	message, err := install(profile, uuids, theme)
 	if err != nil {
 		fmt.Printf("%s: %s", message, err.Error())
 		fmt.Scanln()

@@ -34,8 +34,10 @@ func createUI() error {
 
 	uuidCheckBox := tview.NewCheckbox().SetLabel("Auto-Generate UUIDs: ").SetChecked(false)
 
+	themeCheckBox := tview.NewCheckbox().SetLabel("Set Firefox dark theme: ").SetChecked(false)
+
 	installButton := tview.NewButton("Install/Update ShadowFox").SetSelectedFunc(func() {
-		message, err := install(paths[profileIndex], uuidCheckBox.IsChecked())
+		message, err := install(paths[profileIndex], uuidCheckBox.IsChecked(), themeCheckBox.IsChecked())
 		if err != nil {
 			notifyErr(message, err)
 		} else {
@@ -66,6 +68,8 @@ func createUI() error {
 				case uninstallButton.HasFocus():
 					app.SetFocus(installButton)
 				case installButton.HasFocus():
+					app.SetFocus(themeCheckBox)
+				case themeCheckBox.HasFocus():
 					app.SetFocus(uuidCheckBox)
 				case uuidCheckBox.HasFocus():
 					app.SetFocus(profileSelect)
@@ -77,6 +81,8 @@ func createUI() error {
 				case profileSelect.HasFocus():
 					app.SetFocus(uuidCheckBox)
 				case uuidCheckBox.HasFocus():
+					app.SetFocus(themeCheckBox)
+				case themeCheckBox.HasFocus():
 					app.SetFocus(installButton)
 				case installButton.HasFocus():
 					app.SetFocus(uninstallButton)
@@ -100,6 +106,12 @@ func createUI() error {
 		AddItem(tview.NewFlex().
 			AddItem(nil, 0, 1, false).
 			AddItem(uuidCheckBox, 0, 10, true).
+			AddItem(nil, 0, 1, false), 1, 0, true,
+		).
+		AddItem(nil, 1, 0, false).
+		AddItem(tview.NewFlex().
+			AddItem(nil, 0, 1, false).
+			AddItem(themeCheckBox, 0, 10, true).
 			AddItem(nil, 0, 1, false), 1, 0, true,
 		).
 		AddItem(nil, 1, 0, false).
