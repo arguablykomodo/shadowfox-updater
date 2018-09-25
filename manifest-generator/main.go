@@ -27,7 +27,7 @@ func main() {
 			findStr,
 			append(
 				findStr,
-				[]byte("    version=\""+strings.TrimPrefix(os.Getenv("V"), "v")+"\"\n")...,
+				[]byte("    version=\""+strings.TrimPrefix(os.Args[1], "v")+"\"\n")...,
 			),
 			-1,
 		),
