@@ -124,7 +124,10 @@ func createUI() error {
 			AddItem(nil, 1, 0, false).
 			AddItem(exitButton, 0, 1, true), 3, 0, true,
 		)
-	flex.SetBorder(true).SetTitle("ShadowFox updater "+version).SetBorderPadding(1, 1, 1, 1)
+	flex.SetBorder(true).
+		SetTitle("ShadowFox updater "+version).
+		SetBorderPadding(1, 1, 1, 1).
+		SetBackgroundColor(tcell.ColorBlack)
 
 	if paths == nil {
 		text := tview.NewTextView().SetText(
