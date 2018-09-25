@@ -60,6 +60,9 @@ func main() {
 	osNames := [3]string{"windows", "mac", "linux"}
 	archNames := [2]string{"x32", "x64"}
 
+	// Inject version number
+	ioutil.WriteFile("version.go", []byte("package main\nvar version="+os.Args[1]), 0644)
+
 	writeManifest()
 
 	// Generate .syso files
