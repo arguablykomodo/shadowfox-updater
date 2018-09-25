@@ -3,7 +3,6 @@
   <assemblyIdentity
     type="win32"
     name="SrKomodo.Software.shadowfoxUpdater"
-    version="1.5.4.0"
   />
   <trustInfo xmlns="urn:schemas-microsoft-com:asm.v3">
     <security>
