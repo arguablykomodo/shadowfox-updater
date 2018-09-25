@@ -5,9 +5,12 @@ before_script:
   - go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
   - go run compiler/main.go $(git describe)
 deploy:
-  - provider: releases
-    skip_cleanup: true
-    file_glob: true
-    file: dist/*
-    on:
-      tags: true
+  provider: releases
+  api_key:
+    secure: IDjfAWsY8TIGCCHILaZ4V/HvrX/d29B20yhan7O6c0/DjGTCprappcVKBwD8yLPxUWVEfa7sWlO9BcVw4hclHAOHf8eq02I59gkip8ch36djkeub300rv340YrX//MAFEaPix/rI5zFGxswCwuojC+AacliltTpZEemqYp0jR6Shd0luS3BPLA0SApIl7cwLUONVM6L3gIGGmsaZDccKYR+sCuopuP40UgxoC3O4aw/hfg96ihgRkF3toKZSBMZFWvXMd82lsA+bI+WIjalBv/Om3gGWPI+7dlLrIZ5Xt3hOz110PTXi06VjRSsMZUZg7gfFeLI2/akKwjKRgflcMe8yMcGKvCEdYGa4unEDdry/l/LPaekZL2tj7QmqZDjMlVh2Cemrmuv0bZ6osekn3FNdMD7o3XX0OUkgvzKJdRnCVpOj0zCFRp3U5NRkBlnPbTlzc8p+OEKZRUAAaEDNSy39U22zYTQiEOsu1KmMP+ZzsxdXkQOQEW6jjO4dbWxVH4TTcYmM4JqhM6tlSpoXDgUJsZjtnme40FyjMYCEbG0VXI3xkTGMO/EowNDDHl5HHhqO3YELfLZREc2VTlirFnaSclvmiTc0MDJ+5MrXEYnVxb//0TkNzbZskFvsmbatzIAR31u8+Fpm2IFURgTnjfNPNG1i6MqAa3eve1frCdI=
+  file_glob: true
+  file: dist/*
+  skip_cleanup: true
+  on:
+    repo: SrKomodo/shadowfox-updater
+    tags: true
