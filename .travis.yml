@@ -2,12 +2,12 @@ language: go
 go:
   - "1.10"
 before_script:
-  - go get github.com/akavel/rsrc
-  - go run manifest-generator/main.go $(git describe)
+  - go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
+  - go run compiler/main.go $(git describe)
 deploy:
-  - provider: script
+  - provider: releases
     skip_cleanup: true
-    script:
-      - curl -sL https://git.io/goreleaser | bash
+    file_glob: true
+    file: dist/*
     on:
       tags: true
