@@ -1,7 +1,9 @@
 language: go
 go:
   - "1.10"
-before_script: go get github.com/akavel/rsrc
+before_script:
+  - sudo apt install git
+  - go get github.com/akavel/rsrc
 deploy:
   - provider: script
     skip_cleanup: true
