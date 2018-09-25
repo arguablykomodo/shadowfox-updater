@@ -1,10 +1,18 @@
 package main
 
+import (
+	"os"
+)
+
 var version = "dev"
 
 func main() {
-	err := createUI()
-	if err != nil {
-		createFallbackUI()
+	if len(os.Args) > 1 {
+		cli()
+	} else {
+		err := createUI()
+		if err != nil {
+			createFallbackUI()
+		}
 	}
 }
