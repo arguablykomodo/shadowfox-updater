@@ -8,8 +8,7 @@ import (
 )
 
 func main() {
-	findStr := []byte(`    name="SrKomodo.Software.shadowfoxUpdater"
-`)
+	findStr := []byte(`name="SrKomodo.Software.shadowfoxUpdater"`)
 
 	os.Remove("manifest.xml")
 
@@ -27,7 +26,7 @@ func main() {
 			findStr,
 			append(
 				findStr,
-				[]byte("    version=\""+strings.TrimPrefix(os.Args[1], "v")+".0\"\n")...,
+				[]byte(" version=\""+strings.TrimPrefix(os.Args[1], "v")+".0\"")...,
 			),
 			-1,
 		),
