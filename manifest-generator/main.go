@@ -10,13 +10,14 @@ import (
 func main() {
 	findStr := []byte(`name="SrKomodo.Software.shadowfoxUpdater"`)
 
-	os.Remove("manifest.xml")
+	err := os.Remove("manifest.xml")
+	if err != nil && !os.IsNotExist(err) {
+		panic(err)
+	}
 
 	manifest, err := ioutil.ReadFile("_manifest.xml")
 	if err != nil {
-		if !os.IsNotExist(err) {
-			panic(err)
-		}
+		panic(err)
 	}
 
 	err = ioutil.WriteFile(
