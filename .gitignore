@@ -28,3 +28,4 @@ shadowfox-updater
 .vscode
 dist
 *.syso
+manifest.xml

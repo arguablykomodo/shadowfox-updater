@@ -1,29 +1,32 @@
+before:
+  hooks:
+    - go run manifest-generator/main.go {{.Version}}
 builds:
   - binary: shadowfox
     goos:
-    - darwin
-    - linux
+      - darwin
+      - linux
     goarch:
-    - 386
-    - amd64
+      - 386
+      - amd64
     env:
-    - CGO_ENABLED=0
+      - CGO_ENABLED=0
   - binary: shadowfox
     goos:
-    - windows
+      - windows
     goarch:
-    - 386
+      - 386
     env:
-    - CGO_ENABLED=0
+      - CGO_ENABLED=0
     hooks:
       pre: rsrc -manifest manifest.xml -arch 386 -o shadowfox.syso
   - binary: shadowfox
     goos:
-    - windows
+      - windows
     goarch:
-    - amd64
+      - amd64
     env:
-    - CGO_ENABLED=0
+      - CGO_ENABLED=0
     hooks:
       pre: rsrc -manifest manifest.xml -arch amd64 -o shadowfox.syso
 brew:
@@ -41,17 +44,17 @@ archive:
     386: x32
     amd64: x64
   files:
-  - none*
+    - none*
   format_overrides:
     - goos: windows
       format: zip
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 snapshot:
   name_template: "{{ .Tag }}-next"
 changelog:
   sort: asc
   filters:
     exclude:
-    - '^docs:'
-    - '^test:'
+      - "^docs:"
+      - "^test:"
