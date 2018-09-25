@@ -1,6 +1,6 @@
 language: go
 go:
-  - "1.10"
+  - "1.11"
 before_script:
   - go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
   - go run compiler/main.go $(git describe)
