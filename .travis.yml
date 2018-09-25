@@ -3,11 +3,11 @@ go:
   - "1.10"
 before_script:
   - go get github.com/akavel/rsrc
+  - go run manifest-generator/main.go $(git describe)
 deploy:
   - provider: script
     skip_cleanup: true
     script:
-      - go run manifest-generator/main.go $(git describe)
       - curl -sL https://git.io/goreleaser | bash
     on:
       tags: true
