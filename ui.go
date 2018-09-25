@@ -56,60 +56,38 @@ func createUI() error {
 		app.Stop()
 	})
 
-	// Setup input so that TAB switches between buttons
-	profileSelect.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		if event.Key() == tcell.KeyTAB {
-			if (event.Modifiers() & tcell.ModShift) == tcell.ModShift {
-				app.SetFocus(exitButton)
+	// Setup input callbacks so that TAB switches between buttons
+	app.SetInputCapture(func(e *tcell.EventKey) *tcell.EventKey {
+		if e.Key() == tcell.KeyTAB {
+			if e.Modifiers()&tcell.ModShift == tcell.ModShift {
+				switch {
+				case exitButton.HasFocus():
+					app.SetFocus(uninstallButton)
+				case uninstallButton.HasFocus():
+					app.SetFocus(installButton)
+				case installButton.HasFocus():
+					app.SetFocus(uuidCheckBox)
+				case uuidCheckBox.HasFocus():
+					app.SetFocus(profileSelect)
+				case profileSelect.HasFocus():
+					app.SetFocus(exitButton)
+				}
 			} else {
-				app.SetFocus(uuidCheckBox)
+				switch {
+				case profileSelect.HasFocus():
+					app.SetFocus(uuidCheckBox)
+				case uuidCheckBox.HasFocus():
+					app.SetFocus(installButton)
+				case installButton.HasFocus():
+					app.SetFocus(uninstallButton)
+				case uninstallButton.HasFocus():
+					app.SetFocus(exitButton)
+				case exitButton.HasFocus():
+					app.SetFocus(profileSelect)
+				}
 			}
 		}
-		return event
-	})
-
-	uuidCheckBox.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		if event.Key() == tcell.KeyTAB {
-			if (event.Modifiers() & tcell.ModShift) == tcell.ModShift {
-				app.SetFocus(profileSelect)
-			} else {
-				app.SetFocus(installButton)
-			}
-		}
-		return event
-	})
-
-	installButton.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		if event.Key() == tcell.KeyTAB {
-			if (event.Modifiers() & tcell.ModShift) == tcell.ModShift {
-				app.SetFocus(uuidCheckBox)
-			} else {
-				app.SetFocus(uninstallButton)
-			}
-		}
-		return event
-	})
-
-	uninstallButton.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		if event.Key() == tcell.KeyTAB {
-			if (event.Modifiers() & tcell.ModShift) == tcell.ModShift {
-				app.SetFocus(installButton)
-			} else {
-				app.SetFocus(exitButton)
-			}
-		}
-		return event
-	})
-
-	exitButton.SetInputCapture(func(event *tcell.EventKey) *tcell.EventKey {
-		if event.Key() == tcell.KeyTAB {
-			if (event.Modifiers() & tcell.ModShift) == tcell.ModShift {
-				app.SetFocus(uninstallButton)
-			} else {
-				app.SetFocus(profileSelect)
-			}
-		}
-		return event
+		return e
 	})
 
 	flex := tview.NewFlex().SetDirection(tview.FlexRow).
