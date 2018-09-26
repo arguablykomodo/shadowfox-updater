@@ -60,9 +60,6 @@ func main() {
 	osNames := [3]string{"windows", "mac", "linux"}
 	archNames := [2]string{"x32", "x64"}
 
-	// Inject version number
-	ioutil.WriteFile("version.go", []byte("package main\nvar version="+os.Args[1]), 0644)
-
 	writeManifest()
 
 	// Generate .syso files
@@ -78,8 +75,7 @@ func main() {
 		"-product-ver-patch=" + patch,
 		"-product-ver-build=0",
 	}
-	syso := exec.Command("goversioninfo", sysoArgs...)
-	_, err = syso.Output()
+	err = exec.Command("goversioninfo", sysoArgs...).Run()
 	checkErr(err)
 
 	for i, buildOS := range osList {
@@ -90,15 +86,20 @@ func main() {
 			err = os.Setenv("GOARCH", buildArch)
 			checkErr(err)
 
-			args := []string{"build", "-o", "dist/shadowfox_" + osNames[i] + "_" + archNames[j]}
-
-			if buildOS == "windows" {
-				args[2] += ".exe"
+			args := []string{
+				"build",
+				"-ldflags", `"-X main.version=` + os.Args[1] + `"`,
+				"-o", "dist/shadowfox_" + osNames[i] + "_" + archNames[j],
 			}
 
+			if buildOS == "windows" {
+				args[4] += ".exe"
+			}
+
+			fmt.Printf("go %v\n", strings.Join(args, " "))
+
 			fmt.Printf("Compiling %v %v\n", buildOS, buildArch)
-			build := exec.Command("go", args...)
-			_, err = build.Output()
+			err = exec.Command("go", args...).Run()
 			checkErr(err)
 		}
 	}
