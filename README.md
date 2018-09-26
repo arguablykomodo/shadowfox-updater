@@ -46,3 +46,23 @@ Usage of shadowfox-updater:
   -uninstall
     	Wheter to install or uninstall ShadowFox
 ```
+
+## Common issues
+
+### ShadowFox couldn't automatically find 'profiles.ini'
+
+If this error shows up then your Firefox installation is probably located in a non-standard location. In this case, the solution would be to move the shadowfox executable to wherever `profiles.ini` is located.
+
+1. Open Firefox and go to `about:profiles`
+2. Click "Open root folder"
+3. Go back a few folders until you see `profiles.ini`
+4. Copy the updater executable to where `profiles.ini` is located
+5. Run the updater again
+
+### Couldn't read prefs.js: no such file or directory
+
+This issue can happen if the profile you are trying to install to hasn't ever been opened. It can be easily fixed by just running Firefox with that profile and then running the updater again.
+
+### panic: key-value delimiter not found
+
+This issue usually happens because `profiles.ini` is encoded in some encoding different from UTF-8, this can be easily fixed by changing `profiles.ini`'s encoding to UTF-8 with your favorite text editor or command line tool of choice.
