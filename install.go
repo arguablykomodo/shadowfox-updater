@@ -237,12 +237,12 @@ func install(profilePath string, generateUUIDs bool, setTheme bool) (string, err
 			}
 		}
 
-		err = backUp(userJs)
-		if err != nil {
-			return "Couldn't backup user.js", err
-		}
-
 		if !strings.Contains(string(userJsContent), darkThemeConfig) {
+			err = backUp(userJs)
+			if err != nil {
+				return "Couldn't backup user.js", err
+			}
+
 			userJsContent = append(userJsContent, []byte(darkThemeConfig)...)
 
 			if err := ioutil.WriteFile(userJs, userJsContent, 0644); err != nil {
