@@ -222,19 +222,24 @@ func install(profilePath string, generateUUIDs bool, setTheme bool) (string, err
 	// Set dark theme
 	if setTheme {
 		userJs := filepath.Join(profilePath, "user.js")
+		userJsContent := []byte{}
+
+		exists, _, err := pathExists(userJs)
+		if exists {
+			userJsContent, err = ioutil.ReadFile(userJs)
+			if err != nil {
+				return "Couldn't read user.js", err
+			}
+		} else {
+			err = createFile(userJs)
+			if err != nil {
+				return "Couldn't create user.js", err
+			}
+		}
+
 		err = backUp(userJs)
 		if err != nil {
 			return "Couldn't backup user.js", err
-		}
-
-		err = createFile(userJs)
-		if err != nil {
-			return "Couldn't create user.js", err
-		}
-
-		userJsContent, err := ioutil.ReadFile(userJs)
-		if err != nil {
-			return "Couldn't read user.js", err
 		}
 
 		if !strings.Contains(string(userJsContent), darkThemeConfig) {
