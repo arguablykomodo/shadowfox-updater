@@ -11,9 +11,11 @@ import (
 	"time"
 )
 
-const darkThemeConfig = `
-user_pref("lightweightThemes.selectedThemeID", "firefox-compact-dark@mozilla.org");
-user_pref("devtools.theme", "dark");`
+var darkThemeConfig = map[string]string{
+	"lightweightThemes.selectedThemeID": "\"firefox-compact-dark@mozilla.org\"",
+	"browser.uidensity":                 "1",
+	"devtools.theme":                    "\"dark\"",
+}
 
 func uninstall(profile string) (string, error) {
 	err := os.RemoveAll(filepath.Join(profile, "chrome", "ShadowFox_customization"))
@@ -221,33 +223,34 @@ func install(profilePath string, generateUUIDs bool, setTheme bool) (string, err
 
 	// Set dark theme
 	if setTheme {
-		userJs := filepath.Join(profilePath, "user.js")
-		userJsContent := []byte{}
+		prefs := filepath.Join(profilePath, "prefs.js")
+		prefsContent := []byte{}
 
-		exists, _, err := pathExists(userJs)
+		exists, _, err := pathExists(prefs)
 		if exists {
-			userJsContent, err = ioutil.ReadFile(userJs)
+			prefsContent, err = ioutil.ReadFile(prefs)
 			if err != nil {
-				return "Couldn't read user.js", err
+				return "Couldn't read prefs.js", err
 			}
 		} else {
-			err = createFile(userJs)
+			err = createFile(prefs)
 			if err != nil {
-				return "Couldn't create user.js", err
+				return "Couldn't create prefs.js", err
 			}
 		}
 
-		if !strings.Contains(string(userJsContent), darkThemeConfig) {
-			err = backUp(userJs)
-			if err != nil {
-				return "Couldn't backup user.js", err
+		for key, value := range darkThemeConfig {
+			regex := regexp.MustCompile("user_pref(\"" + key + "\", .+);")
+			replace := []byte("user_pref(\"" + key + "\", " + value + ");")
+			if regex.Match(prefsContent) {
+				prefsContent = regex.ReplaceAll(prefsContent, replace)
+			} else {
+				prefsContent = append(append(prefsContent, replace...), '\n')
 			}
+		}
 
-			userJsContent = append(userJsContent, []byte(darkThemeConfig)...)
-
-			if err := ioutil.WriteFile(userJs, userJsContent, 0644); err != nil {
-				return "Couldn't write user.js", err
-			}
+		if err := ioutil.WriteFile(prefs, prefsContent, 0644); err != nil {
+			return "Couldn't write prefs.js", err
 		}
 	}
 
