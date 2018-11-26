@@ -178,7 +178,7 @@ func install(profilePath string, generateUUIDs bool, setTheme bool) (string, err
 	if err != nil {
 		return "Couldn't read userContent_customization.css", err
 	}
-	if len(chromeCustom) != 0 {
+	if len(contentCustom) != 0 {
 		userContent = userContent + string(contentCustom)
 	}
 
