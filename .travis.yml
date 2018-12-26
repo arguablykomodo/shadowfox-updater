@@ -6,13 +6,16 @@ script:
   - go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
   - cd ..
   - go run compiler/main.go $(git describe)
-  - ./update_tap.sh $TAP_TOKEN
 
 deploy:
-  provider: releases
-  api_key: $GITHUB_TOKEN
-  file_glob: true
-  file: dist/*
-  skip_cleanup: true
-  on:
-    tags: true
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    file_glob: true
+    file: dist/*
+    skip_cleanup: true
+    on:
+      tags: true
+  - provider: script
+    script: ./update_tap.sh $TAP_TOKEN
+    on:
+      tags: true
