@@ -1,9 +1,11 @@
 module github.com/SrKomodo/shadowfox-updater
 
 require (
+	github.com/akavel/rsrc v0.0.0-20170831122431-f6a15ece2cfd // indirect
 	github.com/gdamore/tcell v1.1.1
 	github.com/go-ini/ini v1.41.0
 	github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e // indirect
+	github.com/josephspurrier/goversioninfo v0.0.0-20190122232203-2e127a11672c // indirect
 	github.com/jtolds/gls v4.2.1+incompatible // indirect
 	github.com/mitchellh/go-homedir v1.0.0
 	github.com/rivo/tview v0.0.0-20190122192331-1ac6fbc0c239

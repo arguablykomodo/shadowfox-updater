@@ -2,9 +2,7 @@ language: go
 go: "1.11"
 
 script:
-  - cd compiler
   - go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
-  - cd ..
   - go run compiler/main.go $(git describe)
 
 deploy:

@@ -24,9 +24,7 @@ func writeManifest() {
 	}
 
 	manifest, err := ioutil.ReadFile("_manifest.xml")
-	if err != nil {
-		panic(err)
-	}
+	checkErr(err)
 
 	err = ioutil.WriteFile(
 		"manifest.xml",
@@ -41,9 +39,7 @@ func writeManifest() {
 		),
 		0644,
 	)
-	if err != nil {
-		panic(err)
-	}
+	checkErr(err)
 }
 
 func main() {
@@ -63,7 +59,6 @@ func main() {
 	writeManifest()
 
 	// Generate .syso files
-	fmt.Printf("Generating .syso files\n")
 	sysoArgs := []string{
 		"-platform-specific=true",
 		"-ver-major=" + major,
@@ -75,7 +70,9 @@ func main() {
 		"-product-ver-patch=" + patch,
 		"-product-ver-build=0",
 	}
-	err = exec.Command("goversioninfo", sysoArgs...).Run()
+	fmt.Println("goversioninfo " + strings.Join(sysoArgs, " "))
+	output, err := exec.Command("goversioninfo", sysoArgs...).Output()
+	fmt.Println(string(output))
 	checkErr(err)
 
 	for i, buildOS := range osList {
@@ -96,10 +93,9 @@ func main() {
 				args[4] += ".exe"
 			}
 
-			fmt.Printf("go %v\n", strings.Join(args, " "))
-
-			fmt.Printf("Compiling %v %v\n", buildOS, buildArch)
-			err = exec.Command("go", args...).Run()
+			fmt.Println("go " + strings.Join(args, " "))
+			output, err := exec.Command("go", args...).Output()
+			fmt.Println(string(output))
 			checkErr(err)
 		}
 	}

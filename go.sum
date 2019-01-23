@@ -1,3 +1,5 @@
+github.com/akavel/rsrc v0.0.0-20170831122431-f6a15ece2cfd h1:yumR8733CaQ3P76MFbIbBKdrJmy4EqnQ5DIhqq8gq2Q=
+github.com/akavel/rsrc v0.0.0-20170831122431-f6a15ece2cfd/go.mod h1:2+aQMrY0hBFBaIr2xxnZ/ctfwnYmMRMbTczYLAC34v4=
 github.com/gdamore/encoding v1.0.0 h1:+7OoQ1Bc6eTm5niUzBa0Ctsh6JbMW6Ra+YNuAtDBdko=
 github.com/gdamore/encoding v1.0.0/go.mod h1:alR0ol34c49FCSBLjhosxzcPHQbf2trDkoo5dl+VrEg=
 github.com/gdamore/tcell v1.1.1 h1:U73YL+jMem2XfhvaIUfPO6MpJawaG92B2funXVb9qLs=
@@ -6,6 +8,8 @@ github.com/go-ini/ini v1.41.0 h1:526aoxDtxRHFQKMZfcX2OG9oOI8TJ5yPLM0Mkno/uTY=
 github.com/go-ini/ini v1.41.0/go.mod h1:ByCAeIL28uOIIG0E3PJtZPDL8WnHpFKFOtgjp+3Ies8=
 github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e h1:JKmoR8x90Iww1ks85zJ1lfDGgIiMDuIptTOhJq+zKyg=
 github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e/go.mod h1:wJfORRmW1u3UXTncJ5qlYoELFm8eSnnEO6hX4iZ3EWY=
+github.com/josephspurrier/goversioninfo v0.0.0-20190122232203-2e127a11672c h1:T48SWrqbD1AAXY1ktt23P2diudMWOX4R+FID7Rqjhts=
+github.com/josephspurrier/goversioninfo v0.0.0-20190122232203-2e127a11672c/go.mod h1:eJTEwMjXb7kZ633hO3Ln9mBUCOjX2+FlTljvpl9SYdE=
 github.com/jtolds/gls v4.2.1+incompatible h1:fSuqC+Gmlu6l/ZYAoZzx2pyucC8Xza35fpRVWLVmUEE=
 github.com/jtolds/gls v4.2.1+incompatible/go.mod h1:QJZ7F/aHp+rZTRtaJ1ow/lLfFfVYBRgL+9YlvaHOwJU=
 github.com/lucasb-eyer/go-colorful v0.0.0-20181028223441-12d3b2882a08 h1:5MnxBC15uMxFv5FY/J/8vzyaBiArCOkMdFT9Jsw78iY=
