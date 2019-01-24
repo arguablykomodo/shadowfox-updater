@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"os/exec"
+	"regexp"
 	"strings"
 )
 
@@ -43,10 +44,15 @@ func writeManifest() {
 }
 
 func main() {
-	version := strings.Split(strings.TrimPrefix(os.Args[1], "v"), ".")
-	major := version[0]
-	minor := version[1]
-	patch := version[2]
+	regex := regexp.MustCompile("v(\\d+)\\.(\\d+)\\.(\\d+)(?:-(\\d+))?")
+	matches := regex.FindStringSubmatch(os.Args[1])
+	major := matches[1]
+	minor := matches[2]
+	patch := matches[3]
+	build := "0"
+	if matches[4] != "" {
+		build = matches[4]
+	}
 
 	var err error
 
@@ -64,11 +70,11 @@ func main() {
 		"-ver-major=" + major,
 		"-ver-minor=" + minor,
 		"-ver-patch=" + patch,
-		"-ver-build=0",
+		"-ver-build=" + build,
 		"-product-ver-major=" + major,
 		"-product-ver-minor=" + minor,
 		"-product-ver-patch=" + patch,
-		"-product-ver-build=0",
+		"-product-ver-build=" + build,
 	}
 	fmt.Println("goversioninfo " + strings.Join(sysoArgs, " "))
 	output, err := exec.Command("goversioninfo", sysoArgs...).Output()
