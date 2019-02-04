@@ -1,7 +1,6 @@
 package main
 
 import (
-	"encoding/json"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -11,18 +10,8 @@ import (
 	"time"
 )
 
-var darkThemeConfig = map[string]string{
-	"lightweightThemes.selectedThemeID": "\"firefox-compact-dark@mozilla.org\"",
-	"browser.uidensity":                 "1",
-	"devtools.theme":                    "\"dark\"",
-}
-
 func uninstall(profile string) (string, error) {
-	err := os.RemoveAll(filepath.Join(profile, "chrome", "ShadowFox_customization"))
-	if err != nil {
-		return "Couldn't delete ShadowFox_customization", err
-	}
-	err = os.Remove(filepath.Join(profile, "chrome", "userChrome.css"))
+	err := os.Remove(filepath.Join(profile, "chrome", "userChrome.css"))
 	if err != nil {
 		return "Couldn't delete userChrome.css", err
 	}
@@ -49,217 +38,143 @@ func downloadFile(file string) (string, error) {
 	return string(data), nil
 }
 
-func pathExists(path string) (bool, bool, error) {
-	stats, err := os.Stat(path)
-	if os.IsNotExist(err) {
-		return false, false, nil
-	}
-	if err != nil {
-		return false, false, err
-	}
-	return true, stats.IsDir(), nil
-}
-
 func backUp(path string) error {
-	exists, _, err := pathExists(path)
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
+		return nil
+	}
 	if err != nil {
 		return err
 	}
-	if exists {
-		err := os.Rename(path, path+time.Now().Format(".2006-01-02-15-04-05.backup"))
-		if err != nil {
-			return err
-		}
+	err = os.Rename(path, path+time.Now().Format(".2006-01-02-15-04-05.backup"))
+	if err != nil {
+		return err
 	}
 	return nil
 }
 
-func createFile(path string) error {
-	exists, _, err := pathExists(path)
-	if err != nil {
-		return err
-	}
-	if !exists {
+func readFile(path string) (string, error) {
+	_, err := os.Stat(path)
+	if os.IsNotExist(err) {
 		err := ioutil.WriteFile(path, nil, 0644)
 		if err != nil {
-			return err
+			return "", err
 		}
+		return "", nil
 	}
-	return nil
-}
-
-func createDir(path string) error {
-	pathExists, _, err := pathExists(path)
 	if err != nil {
-		return err
+		return "", err
 	}
-	if !pathExists {
-		err := os.Mkdir(path, 0700)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-func addColorOverrides(source, colors string) string {
-	startI := strings.Index(source, "--start-indicator-for-updater-scripts: black;")
-	endI := strings.Index(source, "--end-indicator-for-updater-scripts: black;") + 43
-	return source[:startI] + colors + source[endI:]
+	bytes, err := ioutil.ReadFile(path)
+	return string(bytes), err
 }
 
 func install(profilePath string, generateUUIDs bool, setTheme bool) (string, error) {
-	// Helper variables to keep things DRY
 	chromePath := filepath.Join(profilePath, "chrome")
 	customPath := filepath.Join(chromePath, "ShadowFox_customization")
-	userChromePath := filepath.Join(chromePath, "userChrome.css")
-	userContentPath := filepath.Join(chromePath, "userContent.css")
 
-	// Create dirs
-	if err := createDir(chromePath); err != nil {
-		return "Couldn't create chrome folder", err
-	}
-	if err := createDir(customPath); err != nil {
-		return "Couldn't create ShadowFox_customization folder", err
+	if err := os.MkdirAll(customPath, 0700); err != nil {
+		return "Couldn't create folders", err
 	}
 
-	// Create customization files
-	if err := createFile(filepath.Join(customPath, "colorOverrides.css")); err != nil {
-		return "Couldn't create colorOverrides.css", err
-	}
-	if err := createFile(filepath.Join(customPath, "internal_UUIDs.txt")); err != nil {
-		return "Couldn't create internal_UUIDs.txt", err
-	}
-	if err := createFile(filepath.Join(customPath, "userContent_customization.css")); err != nil {
-		return "Couldn't create userContent_customization.css", err
-	}
-	if err := createFile(filepath.Join(customPath, "userChrome_customization.css")); err != nil {
-		return "Couldn't create userChrome_customization.css", err
-	}
-
-	// Download files
-	userChrome, err := downloadFile("userChrome.css")
-	if err != nil {
-		return "userChrome.css Couldn't be downloaded", err
-	}
-	userContent, err := downloadFile("userContent.css")
-	if err != nil {
-		return "userContent.css Couldn't be downloaded", err
-	}
-
-	// Backup old files
-	if err := backUp(userChromePath); err != nil {
-		return "Couldn't backup userChrome.css", err
-	}
-	if err := backUp(userContentPath); err != nil {
-		return "Couldn't backup userContent.css", err
-	}
-
-	// Add color overrides
-	colors, err := ioutil.ReadFile(filepath.Join(customPath, "colorOverrides.css"))
+	colors, err := readFile(filepath.Join(customPath, "colorOverrides.css"))
 	if err != nil {
 		return "Couldn't read colorOverrides.css", err
 	}
-	if len(colors) != 0 {
-		userChrome = addColorOverrides(userChrome, string(colors))
-		userContent = addColorOverrides(userContent, string(colors))
-	}
 
-	// Add customization files
-	chromeCustom, err := ioutil.ReadFile(filepath.Join(customPath, "userChrome_customization.css"))
-	if err != nil {
-		return "Couldn't read userChrome_customization.css", err
-	}
-	if len(chromeCustom) != 0 {
-		userChrome = userChrome + string(chromeCustom)
-	}
-
-	contentCustom, err := ioutil.ReadFile(filepath.Join(customPath, "userContent_customization.css"))
-	if err != nil {
-		return "Couldn't read userContent_customization.css", err
-	}
-	if len(contentCustom) != 0 {
-		userContent = userContent + string(contentCustom)
-	}
-
-	// Add UUIDs
-	uuidFile, err := ioutil.ReadFile(filepath.Join(customPath, "internal_UUIDs.txt"))
-	if err != nil {
-		return "Couldn't read internal_UUIDs.txt", err
-	}
 	if generateUUIDs {
 		err := backUp(filepath.Join(customPath, "internal_UUIDs.txt"))
 		if err != nil {
 			return "Couldn't backup internal_UUIDs.txt", err
 		}
-		prefsFile, err := ioutil.ReadFile(filepath.Join(profilePath, "prefs.js"))
+
+		prefs, err := readFile(filepath.Join(profilePath, "prefs.js"))
 		if err != nil {
 			return "Couldn't read prefs.js", err
 		}
-		prefsString := strings.Replace(
-			regexp.MustCompile("extensions\\.webextensions\\.uuids\\\", \\\"(.+)\\\"\\);").
-				FindStringSubmatch(string(prefsFile))[1],
-			"\\", "", -1,
-		)
-		var prefsJSON map[string]string
-		err = json.Unmarshal([]byte(prefsString), &prefsJSON)
+
+		regex := regexp.MustCompile(`\\\"(.+?)\\\":\\\"(.{8}-.{4}-.{4}-.{4}-.{12})\\\"`)
+		matches := regex.FindAllStringSubmatch(prefs, -1)
+		output := ""
+		for _, match := range matches {
+			output += match[1] + "=" + match[2] + "\n"
+		}
+
+		if err := ioutil.WriteFile(filepath.Join(customPath, "internal_UUIDs.txt"), []byte(output), 0644); err != nil {
+			return "Couldn't write internal_UUIDs.txt", err
+		}
+	}
+
+	uuidBytes, err := readFile(filepath.Join(customPath, "internal_UUIDs.txt"))
+	if err != nil {
+		return "Couldn't read internal_UUIDs.txt", err
+	}
+	uuids := string(uuidBytes)
+	pairs := regexp.MustCompile("(.+)=(.+)").FindAllStringSubmatch(uuids, -1)
+
+	for _, file := range []string{
+		"userChrome",
+		"userContent",
+	} {
+		path := filepath.Join(chromePath, file)
+
+		if err := backUp(path); err != nil {
+			return "Couldn't backup " + file, err
+		}
+
+		contents, err := downloadFile(file + ".css")
 		if err != nil {
-			return "Couldn't parse prefs.js", err
+			return "Couldn't download " + file, err
 		}
-		newUUIDFile := ""
-		for key, value := range prefsJSON {
-			newUUIDFile += key + "=" + value + "\n"
-			userContent = strings.Replace(userContent, key, value, -1)
+
+		// Add color overrides
+		startI := strings.Index(contents, "--start-indicator-for-updater-scripts: black;")
+		endI := strings.Index(contents, "--end-indicator-for-updater-scripts: black;") + 43
+		contents = contents[:startI] + colors + contents[endI:]
+
+		// Add customizations
+		custom, err := readFile(filepath.Join(customPath, file+"_customization.css"))
+		if err != nil {
+			return "Couldn't read " + file + "_customization.css", err
 		}
-		if err := ioutil.WriteFile(filepath.Join(customPath, "internal_UUIDs.txt"), []byte(newUUIDFile), 0644); err != nil {
-			return "Couldn't write internal_UUIDs.txt to file", err
-		}
-	} else {
-		pairs := regexp.MustCompile("(.+)=(.+)").FindAllStringSubmatch(string(uuidFile), -1)
+		contents = contents + string(custom)
+
+		// Add UUIDs
 		for _, key := range pairs {
-			userContent = strings.Replace(userContent, key[1], key[2], -1)
+			contents = strings.Replace(contents, key[1], key[2], -1)
+		}
+
+		// Write file
+		if err := ioutil.WriteFile(path+".css", []byte(contents), 0644); err != nil {
+			return "Couldn't write " + file, err
 		}
 	}
 
 	// Set dark theme
 	if setTheme {
-		prefs := filepath.Join(profilePath, "prefs.js")
-		prefsContent := []byte{}
-
-		exists, _, err := pathExists(prefs)
-		if exists {
-			prefsContent, err = ioutil.ReadFile(prefs)
-			if err != nil {
-				return "Couldn't read prefs.js", err
-			}
-		} else {
-			err = createFile(prefs)
-			if err != nil {
-				return "Couldn't create prefs.js", err
-			}
+		path := filepath.Join(profilePath, "prefs.js")
+		prefsContent, err := readFile(path)
+		if err != nil {
+			return "Couldn't read prefs.js", err
 		}
 
-		for key, value := range darkThemeConfig {
+		for key, value := range map[string]string{
+			"lightweightThemes.selectedThemeID": "\"firefox-compact-dark@mozilla.org\"",
+			"browser.uidensity":                 "1",
+			"devtools.theme":                    "\"dark\"",
+		} {
 			regex := regexp.MustCompile("user_pref(\"" + key + "\", .+);")
-			replace := []byte("user_pref(\"" + key + "\", " + value + ");")
-			if regex.Match(prefsContent) {
-				prefsContent = regex.ReplaceAll(prefsContent, replace)
+			replace := "user_pref(\"" + key + "\", " + value + ");"
+			if regex.MatchString(prefsContent) {
+				prefsContent = regex.ReplaceAllString(prefsContent, replace)
 			} else {
-				prefsContent = append(append(prefsContent, replace...), '\n')
+				prefsContent += replace + "\n"
 			}
 		}
 
-		if err := ioutil.WriteFile(prefs, prefsContent, 0644); err != nil {
+		if err := ioutil.WriteFile(path, []byte(prefsContent), 0644); err != nil {
 			return "Couldn't write prefs.js", err
 		}
-	}
-
-	// Write new files
-	if err := ioutil.WriteFile(userChromePath, []byte(userChrome), 0644); err != nil {
-		return "Couldn't write userChrome.css to file", err
-	}
-	if err := ioutil.WriteFile(userContentPath, []byte(userContent), 0644); err != nil {
-		return "Couldn't write userContent.css to file", err
 	}
 
 	return "", nil

@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"os"
 	"path/filepath"
 
 	"github.com/go-ini/ini"
@@ -37,11 +38,12 @@ func getProfilePaths() ([]string, []string) {
 
 	// Check if profiles.ini exists on each possible path and add them to the list
 	for _, p := range possible {
-		exists, _, err := pathExists(p)
-		checkErr("Couldn't check if "+p+" exists", err)
-		if exists {
-			iniPaths = append(iniPaths, p)
+		_, err := os.Stat(p)
+		if os.IsNotExist(err) {
+			continue
 		}
+		checkErr("Couldn't check if "+p+" exists", err)
+		iniPaths = append(iniPaths, p)
 	}
 
 	// If we didnt find anything then we just give up
