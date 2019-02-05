@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"io/ioutil"
 	"os"
@@ -16,35 +15,8 @@ func checkErr(err error) {
 	}
 }
 
-func writeManifest() {
-	findStr := []byte(`name="SrKomodo.Software.shadowfoxUpdater"`)
-
-	err := os.Remove("manifest.xml")
-	if err != nil && !os.IsNotExist(err) {
-		panic(err)
-	}
-
-	manifest, err := ioutil.ReadFile("_manifest.xml")
-	checkErr(err)
-
-	err = ioutil.WriteFile(
-		"manifest.xml",
-		bytes.Replace(
-			manifest,
-			findStr,
-			append(
-				findStr,
-				[]byte(" version=\""+strings.TrimPrefix(os.Args[1], "v")+".0\"")...,
-			),
-			1,
-		),
-		0644,
-	)
-	checkErr(err)
-}
-
 func main() {
-	regex := regexp.MustCompile("v(\\d+)\\.(\\d+)\\.(\\d+)(?:-(\\d+))?")
+	regex := regexp.MustCompile(`v(\d+)\.(\d+)\.(\d+)(?:-(\d+))?`)
 	matches := regex.FindStringSubmatch(os.Args[1])
 	major := matches[1]
 	minor := matches[2]
@@ -62,7 +34,26 @@ func main() {
 	osNames := [3]string{"windows", "mac", "linux"}
 	archNames := [2]string{"x32", "x64"}
 
-	writeManifest()
+	findStr := `name="SrKomodo.Software.shadowfoxUpdater"`
+
+	err = os.Remove("manifest.xml")
+	if err != nil && !os.IsNotExist(err) {
+		panic(err)
+	}
+
+	manifestBytes, err := ioutil.ReadFile("_manifest.xml")
+	checkErr(err)
+
+	manifest := string(manifestBytes)
+	manifest = strings.Replace(manifest, "\n", "", -1)
+	manifest = strings.Replace(
+		manifest, findStr,
+		findStr+fmt.Sprintf(` version="%s.%s.%s.%s"`, major, minor, patch, build),
+		1,
+	)
+
+	err = ioutil.WriteFile("manifest.xml", []byte(manifest), 0644)
+	checkErr(err)
 
 	// Generate .syso files
 	sysoArgs := []string{
