@@ -2,6 +2,8 @@
 
 TAG=$(git describe)
 CHECKSUM=$(sha256sum dist/shadowfox_mac_x64 | cut -d' ' -f1)
+echo Tag=$TAG
+echo Checksum=$CHECKSUM
 
 # clone repo
 git clone https://github.com/SrKomodo/homebrew-tap.git
@@ -19,5 +21,5 @@ done < ../tap_template > Formula/shadowfox-updater.rb
 
 # Push to tap
 git add Formula/shadowfox-updater.rb
-git commit -m \"$TAG\"
+git commit -m $TAG
 git push --set-upstream origin master
