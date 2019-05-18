@@ -11,13 +11,14 @@ import (
 )
 
 func uninstall(profile string) (string, error) {
-	err := os.Remove(filepath.Join(profile, "chrome", "userChrome.css"))
-	if err != nil {
-		return "Couldn't delete userChrome.css", err
-	}
-	err = os.Remove(filepath.Join(profile, "chrome", "userContent.css"))
-	if err != nil {
-		return "Couldn't delete userContent.css", err
+	for _, file := range []string{
+		"userChrome.css",
+		"userContent.css",
+	} {
+		path := filepath.Join(profile, "chrome", file)
+		if err := backUp(path); err != nil {
+			return "Couldn't backup " + file, err
+		}
 	}
 	return "", nil
 }
@@ -118,7 +119,7 @@ func install(profilePath string, generateUUIDs bool, setTheme bool) (string, err
 	} {
 		path := filepath.Join(chromePath, file)
 
-		if err := backUp(path); err != nil {
+		if err := backUp(path + ".css"); err != nil {
 			return "Couldn't backup " + file, err
 		}
 
