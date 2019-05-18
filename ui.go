@@ -64,7 +64,7 @@ func createUI() error {
 		box.Append(themeCheckBox, false)
 		box.Append(buttons, false)
 
-		window := ui.NewWindow("Shadowfox Updater "+version, 1, 1, false)
+		window := ui.NewWindow("Shadowfox Updater", 1, 1, false)
 		window.SetMargined(true)
 		window.SetChild(box)
 		window.OnClosing(func(*ui.Window) bool {

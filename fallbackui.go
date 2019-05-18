@@ -18,8 +18,6 @@ func createFallbackUI() {
 		return
 	}
 
-	fmt.Print("ShadowFox updater " + version + "\n\n")
-
 	fmt.Println("Available profiles:")
 	for i, name := range names {
 		fmt.Printf("  %d: %s\n", i, name)
