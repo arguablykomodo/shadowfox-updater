@@ -1,9 +1,8 @@
 language: go
-go: "1.11"
+go: "1.12"
 
 script:
-  - go get github.com/josephspurrier/goversioninfo/cmd/goversioninfo
-  - go run compiler/main.go $(git describe)
+  - go run compiler/main.go
 
 deploy:
   - provider: releases

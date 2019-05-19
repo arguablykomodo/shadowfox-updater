@@ -1,23 +1,12 @@
 package main
 
 import (
-	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/go-ini/ini"
 	homedir "github.com/mitchellh/go-homedir"
 )
-
-func checkErr(msg string, err error) {
-	if err != nil {
-		fmt.Printf("%s: %s\n", msg, err)
-		fmt.Println("You should probably report this crash in https://github.com/SrKomodo/shadowfox-updater/issues/new")
-		fmt.Println("Press enter to close the program")
-		fmt.Scanln()
-		panic(err)
-	}
-}
 
 func getProfilePaths() ([]string, []string) {
 	// iniPaths stores all profiles.ini files we have to check

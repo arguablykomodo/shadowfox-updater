@@ -1,77 +1,55 @@
 package main
 
 import (
-	"github.com/andlabs/ui"
-	_ "github.com/andlabs/ui/winmanifest"
+	"github.com/gen2brain/dlgs"
 )
 
 func createUI() error {
-	err := ui.Main(func() {
-		paths, names := getProfilePaths()
+	paths, names := getProfilePaths()
 
-		infoText := ui.NewLabel("")
+	name, selected, err := dlgs.List("Shadowfox Updater", "Which Firefox profile are you going to use?", names)
+	checkErr("", err)
+	if !selected {
+		dlgs.Info("Shadowfox Updater", "You didn't pick any profile, the application will now close.")
+		return nil
+	}
 
-		dropdown := ui.NewCombobox()
-		for _, name := range names {
-			dropdown.Append(name)
+	pathIndex := 0
+	for _, name2 := range names {
+		if name == name2 {
+			break
 		}
-		dropdown.SetSelected(0)
+		pathIndex++
+	}
+	profilePath := paths[pathIndex]
 
-		dropdownForm := ui.NewForm()
-		dropdownForm.SetPadded(true)
-		dropdownForm.Append("Profile to use:", dropdown, false)
+	action, selected, err := dlgs.List("Shadowfox Updater", "What do you want to do?", []string{"Install/Update Shadowfox", "Uninstall Shadowfox"})
+	checkErr("", err)
+	if !selected {
+		dlgs.Info("Shadowfox Updater", "You didn't pick any action, the application will now close.")
+		return nil
+	}
 
-		installButton := ui.NewButton("Install/Update ShadowFox")
-		uninstallButton := ui.NewButton("Uninstall ShadowFox")
-		exitButton := ui.NewButton("Exit")
+	if action == "Install/Update Shadowfox" {
+		shouldGenerateUUIDs, err := dlgs.Question("Shadowfox Updater", "Would you like to auto-generate UUIDs?", true)
+		checkErr("", err)
 
-		buttons := ui.NewHorizontalBox()
-		buttons.SetPadded(true)
-		buttons.Append(installButton, true)
-		buttons.Append(uninstallButton, true)
-		buttons.Append(exitButton, true)
+		shouldSetTheme, err := dlgs.Question("Shadowfox Updater", "Would you like to automatically set the Firefox dark theme?", false)
+		checkErr("", err)
 
-		uuidCheckBox := ui.NewCheckbox("Auto-Generate UUIDs")
-		themeCheckBox := ui.NewCheckbox("Set Firefox dark theme")
-
-		installButton.OnClicked(func(b *ui.Button) {
-			message, err := install(paths[dropdown.Selected()], uuidCheckBox.Checked(), themeCheckBox.Checked())
-			if err != nil {
-				infoText.SetText(message + ":\n" + err.Error())
-			} else {
-				infoText.SetText("ShadowFox was successfully installed!")
-			}
-		})
-
-		uninstallButton.OnClicked(func(b *ui.Button) {
-			message, err := uninstall(paths[dropdown.Selected()])
-			if err != nil {
-				infoText.SetText(message + ":\n" + err.Error())
-			} else {
-				infoText.SetText("ShadowFox was successfully uninstalled!")
-			}
-		})
-
-		exitButton.OnClicked(func(b *ui.Button) {
-			ui.Quit()
-		})
-
-		box := ui.NewVerticalBox()
-		box.SetPadded(true)
-		box.Append(infoText, false)
-		box.Append(dropdownForm, false)
-		box.Append(uuidCheckBox, false)
-		box.Append(themeCheckBox, false)
-		box.Append(buttons, false)
-
-		window := ui.NewWindow("Shadowfox Updater", 1, 1, false)
-		window.SetMargined(true)
-		window.SetChild(box)
-		window.OnClosing(func(*ui.Window) bool {
-			ui.Quit()
-			return true
-		})
-		window.Show()
-	})
-	return err
+		msg, err := install(profilePath, shouldGenerateUUIDs, shouldSetTheme)
+		if err == nil {
+			dlgs.Info("Shadowfox Updater", "Shadowfox has been succesfully installed!")
+		} else {
+			checkErr(msg, err)
+		}
+	} else {
+		msg, err := uninstall(profilePath)
+		if err == nil {
+			dlgs.Info("Shadowfox Updater", "Shadowfox has been succesfully uninstalled!")
+		} else {
+			checkErr(msg, err)
+		}
+	}
+	return nil
 }

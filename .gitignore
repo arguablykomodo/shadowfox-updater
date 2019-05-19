@@ -23,9 +23,8 @@ _testmain.go
 *.exe~
 *.test
 *.prof
-shadowfox-updater
 
 .vscode
+shadowfox-updater
 dist
-*.syso
-manifest.xml
+vendor
