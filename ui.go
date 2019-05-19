@@ -4,14 +4,21 @@ import (
 	"github.com/gen2brain/dlgs"
 )
 
-func createUI() error {
+func checkErr(msg string, err error) {
+	if err != nil {
+		dlgs.Error("Shadowfox Updater", msg+"\n"+err.Error())
+		panic(err)
+	}
+}
+
+func createUI() {
 	paths, names := getProfilePaths()
 
 	name, selected, err := dlgs.List("Shadowfox Updater", "Which Firefox profile are you going to use?", names)
 	checkErr("", err)
 	if !selected {
 		dlgs.Info("Shadowfox Updater", "You didn't pick any profile, the application will now close.")
-		return nil
+		return
 	}
 
 	pathIndex := 0
@@ -27,7 +34,7 @@ func createUI() error {
 	checkErr("", err)
 	if !selected {
 		dlgs.Info("Shadowfox Updater", "You didn't pick any action, the application will now close.")
-		return nil
+		return
 	}
 
 	if action == "Install/Update Shadowfox" {
@@ -51,5 +58,4 @@ func createUI() error {
 			checkErr(msg, err)
 		}
 	}
-	return nil
 }
