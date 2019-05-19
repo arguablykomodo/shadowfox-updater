@@ -7,7 +7,7 @@ This is a cross-platform installer/uninstaller/updater for [Shadowfox](https://g
 - For all platforms: go to the [latest release](https://github.com/SrKomodo/shadowfox-updater/releases/latest) and download the respective file for your OS
   - If you are in Linux or Mac, you will probably need to run `chmod +x [filename]` for the OS to register it as an executable
 - On Arch Linux you can install the package `shadowfox-updater` from AUR
-- On MacOS, you can install with either [Homebrew](https://brew.sh/) or [MacPorts.](https://www.macports.org/) 
+- On MacOS, you can install with either [Homebrew](https://brew.sh/) or [MacPorts.](https://www.macports.org/)
 
   - Homebrew installation:
 
@@ -29,19 +29,19 @@ There are various ways to use Shadowfox Updater
 
 ### GUI Mode
 
-If you run the file from the command line, it will show you a text-based UI. You can use `TAB` to move between the different options (and `SHIFT+TAB` on some terminals to move backwards), and you can use `ENTER` to toggle the checkboxes and press the buttons.
+If you run the file, it should open a series of prompts that will ask you everything needed to install or uninstall Shadowfox.
 
-The "Profile to use" dropdown will show all available profiles in which to install to, and you can cycle through them with the arrow keys.
+The "Profile to use" list will let you choose which profile you are going to work with.
 
-The "Auto-Generate UUIDs" checkbox, if toggled, will make the updater automatically populate the `internal_UUIDs.txt` file, which is used for styling of extensions. Generally you would toggle this unless you want to manage precisely which extensions get styled.
+Then, a prompt will give you the option to either install/update or uninstall Shadowfox.
 
-The "Set Firefox dark theme" checkbox, if toggled, will make the updater automatically enable Firefox's dark theme for it's UI and devtools. If you already have the dark theme enabled, you shouldn't toggle this one.
+The "Auto-Generate UUIDs" prompt, if accepted, will make the updater automatically populate the `internal_UUIDs.txt` file, which is used for styling of extensions. Generally you would toggle this unless you want to manage precisely which extensions get styled.
 
-Then the "Install/Update Shadowfox", "Uninstall Shadowfox" and "Exit" buttons are pretty self explanatory.
+The "Set Firefox dark theme" prompt, if accepted, will make the updater automatically enable Firefox's dark theme for it's UI and devtools. If you already have the dark theme enabled, you shouldn't toggle this one.
 
 #### Fallback
 
-If the text-based UI fails to load (something that happens in some terminals), the program will load a more basic text-only prompt that has the same features as the usual GUI but without the fancy buttons and dropdowns.
+If the graphical UI fails to load, the program will load a more basic text-only prompt that has the same features as the usual UI but without the fancy graphical interface.
 
 ### CLI Mode
 
