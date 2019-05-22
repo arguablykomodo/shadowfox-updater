@@ -11,14 +11,20 @@ func checkErr(msg string, err error) {
 	}
 }
 
-func createUI() {
+func createUI() error {
 	paths, names := getProfilePaths()
 
 	name, selected, err := dlgs.List("Shadowfox Updater", "Which Firefox profile are you going to use?", names)
-	checkErr("", err)
+	if err != nil {
+		return err
+	}
+
 	if !selected {
-		dlgs.Info("Shadowfox Updater", "You didn't pick any profile, the application will now close.")
-		return
+		_, err := dlgs.Info("Shadowfox Updater", "You didn't pick any profile, the application will now close.")
+		if err != nil {
+			return err
+		}
+		return nil
 	}
 
 	pathIndex := 0
@@ -31,31 +37,46 @@ func createUI() {
 	profilePath := paths[pathIndex]
 
 	action, selected, err := dlgs.List("Shadowfox Updater", "What do you want to do?", []string{"Install/Update Shadowfox", "Uninstall Shadowfox"})
-	checkErr("", err)
+	if err != nil {
+		return err
+	}
+
 	if !selected {
 		dlgs.Info("Shadowfox Updater", "You didn't pick any action, the application will now close.")
-		return
+		return nil
 	}
 
 	if action == "Install/Update Shadowfox" {
 		shouldGenerateUUIDs, err := dlgs.Question("Shadowfox Updater", "Would you like to auto-generate UUIDs?", true)
-		checkErr("", err)
+		if err != nil {
+			return err
+		}
 
 		shouldSetTheme, err := dlgs.Question("Shadowfox Updater", "Would you like to automatically set the Firefox dark theme?", false)
-		checkErr("", err)
+		if err != nil {
+			return err
+		}
 
 		msg, err := install(profilePath, shouldGenerateUUIDs, shouldSetTheme)
 		if err == nil {
-			dlgs.Info("Shadowfox Updater", "Shadowfox has been succesfully installed!")
+			_, err = dlgs.Info("Shadowfox Updater", "Shadowfox has been succesfully installed!")
+			if err != nil {
+				return err
+			}
 		} else {
 			checkErr(msg, err)
 		}
 	} else {
 		msg, err := uninstall(profilePath)
 		if err == nil {
-			dlgs.Info("Shadowfox Updater", "Shadowfox has been succesfully uninstalled!")
+			_, err = dlgs.Info("Shadowfox Updater", "Shadowfox has been succesfully uninstalled!")
+			if err != nil {
+				return err
+			}
 		} else {
 			checkErr(msg, err)
 		}
 	}
+
+	return nil
 }

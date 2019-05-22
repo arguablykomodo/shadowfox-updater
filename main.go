@@ -8,6 +8,8 @@ func main() {
 	if len(os.Args) > 1 {
 		cli()
 	} else {
-		createUI()
+		if err := createUI(); err != nil {
+			createFallbackUI()
+		}
 	}
 }
