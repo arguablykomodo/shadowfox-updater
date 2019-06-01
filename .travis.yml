@@ -2,7 +2,7 @@ language: go
 go: "1.12"
 
 script:
-  - go run compiler/main.go
+  - ./build.sh
 
 deploy:
   - provider: releases
