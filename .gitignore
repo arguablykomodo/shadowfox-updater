@@ -28,3 +28,4 @@ _testmain.go
 shadowfox-updater
 dist
 vendor
+homebrew-tap

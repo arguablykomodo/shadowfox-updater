@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 
+# Make sure we are on the right directory
+cd $(dirname $0)
+
 TAG=$(git describe)
 CHECKSUM=$(sha256sum dist/shadowfox_mac_x64 | cut -d' ' -f1)
 echo Tag=$TAG
 echo Checksum=$CHECKSUM
 
-# clone repo
+# Clone repo
 git clone https://github.com/SrKomodo/homebrew-tap.git
 cd homebrew-tap
 git remote rm origin
