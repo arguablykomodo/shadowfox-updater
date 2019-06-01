@@ -15,6 +15,6 @@ for I in ${!OSLIST[*]}; do
       OUT=${OUT}.exe
     fi
     
-    go build -o $OUT
+    go build -o $OUT -ldflags "-X main.tag=$(git describe)"
   done
 done

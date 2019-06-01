@@ -2,11 +2,13 @@ package main
 
 import (
 	"flag"
+	"fmt"
 )
 
 func cli() {
 	paths, names := getProfilePaths()
 
+	version := flag.Bool("version", false, "Shows the current version")
 	uninstalling := flag.Bool("uninstall", false, "Wheter to install or uninstall ShadowFox")
 	profileName := flag.String("profile-name", "", "Name of profile to use, if not defined or not found will fallback to profile-index")
 	profileIndex := flag.Int("profile-index", 0, "Index of profile to use")
@@ -14,6 +16,11 @@ func cli() {
 	theme := flag.Bool("set-dark-theme", false, "Wheter to automatically set Firefox's dark theme")
 
 	flag.Parse()
+
+	if *version {
+		fmt.Println(header)
+		return
+	}
 
 	var path string
 	for i, name := range names {

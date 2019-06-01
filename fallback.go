@@ -6,6 +6,8 @@ import (
 )
 
 func createFallbackUI() {
+	fmt.Println(header)
+
 	var choice string
 	paths, names := getProfilePaths()
 
