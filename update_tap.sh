@@ -2,6 +2,7 @@
 
 # Make sure we are on the right directory
 cd $(dirname $0)
+pwd
 
 TAG=$(git describe)
 CHECKSUM=$(sha256sum dist/shadowfox_mac_x64 | cut -d' ' -f1)
@@ -11,6 +12,7 @@ echo Checksum=$CHECKSUM
 # Clone repo
 git clone https://github.com/SrKomodo/homebrew-tap.git
 cd homebrew-tap
+pwd
 git remote rm origin
 git remote add origin https://SrKomodo:$1@github.com/SrKomodo/homebrew-tap.git
 
