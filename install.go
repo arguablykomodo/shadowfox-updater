@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -10,27 +11,13 @@ import (
 	"time"
 )
 
-func uninstall(profile string) (string, error) {
-	for _, file := range []string{
-		"userChrome.css",
-		"userContent.css",
-	} {
-		path := filepath.Join(profile, "chrome", file)
-		if err := backUp(path); err != nil {
-			return "Couldn't backup " + file, err
-		}
-	}
-	return "", nil
-}
-
 func downloadFile(file string) (string, error) {
 	resp, err := http.Get("https://raw.githubusercontent.com/overdodactyl/ShadowFox/master/" + file)
-
 	if err != nil {
 		return "", err
 	}
-
 	defer resp.Body.Close()
+
 	data, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return "", err
@@ -47,6 +34,7 @@ func backUp(path string) error {
 	if err != nil {
 		return err
 	}
+
 	err = os.Rename(path, path+time.Now().Format(".2006-01-02-15-04-05.backup"))
 	if err != nil {
 		return err
@@ -66,32 +54,49 @@ func readFile(path string) (string, error) {
 	if err != nil {
 		return "", err
 	}
+
 	bytes, err := ioutil.ReadFile(path)
-	return string(bytes), err
+	if err != nil {
+		return "", err
+	}
+	return string(bytes), nil
 }
 
-func install(profilePath string, generateUUIDs bool, setTheme bool) (string, error) {
+func uninstall(profile string) error {
+	for _, file := range []string{
+		"userChrome.css",
+		"userContent.css",
+	} {
+		path := filepath.Join(profile, "chrome", file)
+		if err := backUp(path); err != nil {
+			return fmt.Errorf("Couldn't backup %s: %s", file, err)
+		}
+	}
+	return nil
+}
+
+func install(profilePath string, generateUUIDs bool, setTheme bool) error {
 	chromePath := filepath.Join(profilePath, "chrome")
 	customPath := filepath.Join(chromePath, "ShadowFox_customization")
 
 	if err := os.MkdirAll(customPath, 0700); err != nil {
-		return "Couldn't create folders", err
+		return fmt.Errorf("Couldn't create folders: %s", err)
 	}
 
 	colors, err := readFile(filepath.Join(customPath, "colorOverrides.css"))
 	if err != nil {
-		return "Couldn't read colorOverrides.css", err
+		return fmt.Errorf("Couldn't read colorOverrides.css: %s", err)
 	}
 
 	if generateUUIDs {
 		err := backUp(filepath.Join(customPath, "internal_UUIDs.txt"))
 		if err != nil {
-			return "Couldn't backup internal_UUIDs.txt", err
+			return fmt.Errorf("Couldn't backup internal_UUIDs.txt: %s", err)
 		}
 
 		prefs, err := readFile(filepath.Join(profilePath, "prefs.js"))
 		if err != nil {
-			return "Couldn't read prefs.js", err
+			return fmt.Errorf("Couldn't read prefs.js: %s", err)
 		}
 
 		regex := regexp.MustCompile(`\\\"(.+?)\\\":\\\"(.{8}-.{4}-.{4}-.{4}-.{12})\\\"`)
@@ -102,13 +107,13 @@ func install(profilePath string, generateUUIDs bool, setTheme bool) (string, err
 		}
 
 		if err := ioutil.WriteFile(filepath.Join(customPath, "internal_UUIDs.txt"), []byte(output), 0644); err != nil {
-			return "Couldn't write internal_UUIDs.txt", err
+			return fmt.Errorf("Couldn't write internal_UUIDs.txt: %s", err)
 		}
 	}
 
 	uuidBytes, err := readFile(filepath.Join(customPath, "internal_UUIDs.txt"))
 	if err != nil {
-		return "Couldn't read internal_UUIDs.txt", err
+		return fmt.Errorf("Couldn't read internal_UUIDs.txt: %s", err)
 	}
 	uuids := string(uuidBytes)
 	pairs := regexp.MustCompile("(.+)=(.+)").FindAllStringSubmatch(uuids, -1)
@@ -120,12 +125,12 @@ func install(profilePath string, generateUUIDs bool, setTheme bool) (string, err
 		path := filepath.Join(chromePath, file)
 
 		if err := backUp(path + ".css"); err != nil {
-			return "Couldn't backup " + file, err
+			return fmt.Errorf("Couldn't backup %s: %s", file, err)
 		}
 
 		contents, err := downloadFile(file + ".css")
 		if err != nil {
-			return "Couldn't download " + file, err
+			return fmt.Errorf("Couldn't download %s: %s", file, err)
 		}
 
 		// Add color overrides
@@ -136,7 +141,7 @@ func install(profilePath string, generateUUIDs bool, setTheme bool) (string, err
 		// Add customizations
 		custom, err := readFile(filepath.Join(customPath, file+"_customization.css"))
 		if err != nil {
-			return "Couldn't read " + file + "_customization.css", err
+			return fmt.Errorf("Couldn't read %s_customization.css: %s", file, err)
 		}
 		contents = contents + string(custom)
 
@@ -147,7 +152,7 @@ func install(profilePath string, generateUUIDs bool, setTheme bool) (string, err
 
 		// Write file
 		if err := ioutil.WriteFile(path+".css", []byte(contents), 0644); err != nil {
-			return "Couldn't write " + file, err
+			return fmt.Errorf("Couldn't write %s: %s", file, err)
 		}
 	}
 
@@ -156,7 +161,7 @@ func install(profilePath string, generateUUIDs bool, setTheme bool) (string, err
 		path := filepath.Join(profilePath, "prefs.js")
 		prefsContent, err := readFile(path)
 		if err != nil {
-			return "Couldn't read prefs.js", err
+			return fmt.Errorf("Couldn't read prefs.js: %s", err)
 		}
 
 		for key, value := range map[string]string{
@@ -174,9 +179,9 @@ func install(profilePath string, generateUUIDs bool, setTheme bool) (string, err
 		}
 
 		if err := ioutil.WriteFile(path, []byte(prefsContent), 0644); err != nil {
-			return "Couldn't write prefs.js", err
+			return fmt.Errorf("Couldn't write prefs.js: %s", err)
 		}
 	}
 
-	return "", nil
+	return nil
 }

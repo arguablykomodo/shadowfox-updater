@@ -9,7 +9,12 @@ func createFallbackUI() {
 	fmt.Println(header)
 
 	var choice string
-	paths, names := getProfilePaths()
+	paths, names, err := getProfilePaths()
+	if err != nil {
+		fmt.Println(err.Error())
+		fmt.Scanln()
+		panic(err)
+	}
 
 	if paths == nil {
 		fmt.Println("ShadowFox couldn't automatically find 'profiles.ini'. Please follow these steps:")
@@ -57,11 +62,11 @@ func createFallbackUI() {
 	fmt.Scanln(&choice)
 	theme := (choice == "y" || choice == "Y")
 
-	message, err := install(profile, uuids, theme)
+	err = install(profile, uuids, theme)
 	if err != nil {
-		fmt.Printf("%s: %s", message, err.Error())
+		fmt.Println(err.Error())
 		fmt.Scanln()
-		return
+		panic(err)
 	}
 
 	fmt.Print("\nShadowFox was successfully installed! (Press 'enter' to exit)")

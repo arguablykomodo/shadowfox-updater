@@ -6,7 +6,12 @@ import (
 )
 
 func cli() {
-	paths, names := getProfilePaths()
+	paths, names, err := getProfilePaths()
+	if err != nil {
+		fmt.Println(err.Error())
+		fmt.Scanln()
+		panic(err)
+	}
 
 	version := flag.Bool("version", false, "Shows the current version")
 	uninstalling := flag.Bool("uninstall", false, "Wheter to install or uninstall ShadowFox")
@@ -33,10 +38,18 @@ func cli() {
 	}
 
 	if *uninstalling {
-		msg, err := uninstall(path)
-		checkErr(msg, err)
+		err := uninstall(path)
+		if err != nil {
+			fmt.Println(err.Error())
+			fmt.Scanln()
+			panic(err)
+		}
 	} else {
-		msg, err := install(path, *uuids, *theme)
-		checkErr(msg, err)
+		err := install(path, *uuids, *theme)
+		if err != nil {
+			fmt.Println(err.Error())
+			fmt.Scanln()
+			panic(err)
+		}
 	}
 }

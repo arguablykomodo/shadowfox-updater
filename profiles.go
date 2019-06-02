@@ -1,6 +1,8 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -8,13 +10,15 @@ import (
 	homedir "github.com/mitchellh/go-homedir"
 )
 
-func getProfilePaths() ([]string, []string) {
+func getProfilePaths() ([]string, []string, error) {
 	// iniPaths stores all profiles.ini files we have to check
 	iniPaths := []string{}
 
 	// Get the home directory
 	homedir, err := homedir.Dir()
-	checkErr("Couldn't find home directory", err)
+	if err != nil {
+		return nil, nil, fmt.Errorf("Couldn't find home directory: %s", err)
+	}
 
 	// Possible places where we should check for profiles.ini
 	possible := []string{
@@ -31,13 +35,15 @@ func getProfilePaths() ([]string, []string) {
 		if os.IsNotExist(err) {
 			continue
 		}
-		checkErr("Couldn't check if "+p+" exists", err)
+		if err != nil {
+			return nil, nil, fmt.Errorf("Couldn't check if %s exists: %s", p, err)
+		}
 		iniPaths = append(iniPaths, p)
 	}
 
 	// If we didnt find anything then we just give up
 	if len(iniPaths) == 0 {
-		return nil, nil
+		return nil, nil, errors.New("Couldn't find any profiles")
 	}
 
 	var paths []string
@@ -46,7 +52,9 @@ func getProfilePaths() ([]string, []string) {
 	// For each possible ini file
 	for _, p := range iniPaths {
 		file, err := ini.Load(p)
-		checkErr("Could not read profiles.ini, make sure its encoded in UTF-8", err)
+		if err != nil {
+			return nil, nil, fmt.Errorf("Could not read profiles.ini, make sure its encoded in UTF-8: %s", err)
+		}
 
 		// Find the Path key and add it to the list
 		for _, section := range file.Sections() {
@@ -64,5 +72,5 @@ func getProfilePaths() ([]string, []string) {
 		}
 	}
 
-	return paths, names
+	return paths, names, nil
 }

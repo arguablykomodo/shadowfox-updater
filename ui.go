@@ -4,15 +4,14 @@ import (
 	"github.com/gen2brain/dlgs"
 )
 
-func checkErr(msg string, err error) {
-	if err != nil {
-		dlgs.Error(header, msg+"\n"+err.Error())
-		panic(err)
-	}
-}
-
 func createUI() error {
-	paths, names := getProfilePaths()
+	paths, names, err := getProfilePaths()
+	if err != nil {
+		_, err := dlgs.Error(header, err.Error())
+		if err != nil {
+			return err
+		}
+	}
 
 	name, selected, err := dlgs.List(header, "Which Firefox profile are you going to use?", names)
 	if err != nil {
@@ -21,10 +20,7 @@ func createUI() error {
 
 	if !selected {
 		_, err := dlgs.Info(header, "You didn't pick any profile, the application will now close.")
-		if err != nil {
-			return err
-		}
-		return nil
+		return err
 	}
 
 	pathIndex := 0
@@ -42,8 +38,8 @@ func createUI() error {
 	}
 
 	if !selected {
-		dlgs.Info(header, "You didn't pick any action, the application will now close.")
-		return nil
+		_, err := dlgs.Info(header, "You didn't pick any action, the application will now close.")
+		return err
 	}
 
 	if action == "Install/Update Shadowfox" {
@@ -57,24 +53,30 @@ func createUI() error {
 			return err
 		}
 
-		msg, err := install(profilePath, shouldGenerateUUIDs, shouldSetTheme)
+		err = install(profilePath, shouldGenerateUUIDs, shouldSetTheme)
 		if err == nil {
 			_, err = dlgs.Info(header, "Shadowfox has been succesfully installed!")
 			if err != nil {
 				return err
 			}
 		} else {
-			checkErr(msg, err)
+			_, err := dlgs.Error(header, err.Error())
+			if err != nil {
+				return err
+			}
 		}
 	} else {
-		msg, err := uninstall(profilePath)
+		err := uninstall(profilePath)
 		if err == nil {
 			_, err = dlgs.Info(header, "Shadowfox has been succesfully uninstalled!")
 			if err != nil {
 				return err
 			}
 		} else {
-			checkErr(msg, err)
+			_, err := dlgs.Error(header, err.Error())
+			if err != nil {
+				return err
+			}
 		}
 	}
 
