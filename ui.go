@@ -1,10 +1,32 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/gen2brain/dlgs"
+	"github.com/skratchdot/open-golang/open"
 )
 
 func createUI() error {
+	shouldUpdate, newTag, err := checkForUpdate()
+	if err != nil {
+		_, err := dlgs.Error(header, err.Error())
+		if err != nil {
+			return err
+		}
+	}
+
+	if shouldUpdate {
+		wantToUpdate, err := dlgs.Question(header, fmt.Sprintf("There is a new shadowfox-updater version available (%s -> %s)\nDo you want to update?", tag, newTag), true)
+		if err != nil {
+			return err
+		}
+		if wantToUpdate {
+			open.Start("https://github.com/SrKomodo/shadowfox-updater/#installing")
+			return nil
+		}
+	}
+
 	paths, names, err := getProfilePaths()
 	if err != nil {
 		_, err := dlgs.Error(header, err.Error())

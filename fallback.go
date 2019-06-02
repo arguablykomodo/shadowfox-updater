@@ -3,10 +3,29 @@ package main
 import (
 	"fmt"
 	"strconv"
+
+	"github.com/skratchdot/open-golang/open"
 )
 
 func createFallbackUI() {
 	fmt.Println(header)
+
+	shouldUpdate, newTag, err := checkForUpdate()
+	if err != nil {
+		fmt.Println(err.Error())
+		fmt.Scanln()
+		panic(err)
+	}
+
+	if shouldUpdate {
+		var choice string
+		fmt.Printf("There is a new shadowfox-updater version available (%s -> %s)\nDo you want to update? [y/n]", tag, newTag)
+		fmt.Scanln(&choice)
+		wantToUpdate := (choice == "y" || choice == "Y")
+		if wantToUpdate {
+			open.Start("https://github.com/SrKomodo/shadowfox-updater/#installing")
+		}
+	}
 
 	var choice string
 	paths, names, err := getProfilePaths()

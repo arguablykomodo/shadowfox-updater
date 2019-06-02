@@ -4,7 +4,6 @@ import (
 	"os"
 )
 
-var tag string
 var header = "Shadowfox updater " + tag
 
 func main() {
