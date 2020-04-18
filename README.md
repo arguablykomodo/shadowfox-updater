@@ -63,6 +63,15 @@ Usage of shadowfox-updater:
 
 ## Common issues
 
+### ShadowFox does not take effect on Firefox 69 and later
+
+As of Firefox version 69, the user needs to enable userChrome via `about:config`, as it is disabled by default.
+
+1. Enter `about:config` into the URL bar.
+2. Accept the risk of tampering with these values.
+3. Enter `toolkit.legacyUserProfileCustomizations.stylesheets` into the search bar.
+4. Double-click the line with values that appear to toggle the preference to "true" (default is "false").
+
 ### ShadowFox couldn't automatically find 'profiles.ini'
 
 If this error shows up then your Firefox installation is probably located in a non-standard location. In this case, the solution would be to move the shadowfox executable to wherever `profiles.ini` is located.
