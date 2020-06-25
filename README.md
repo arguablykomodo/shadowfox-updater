@@ -6,6 +6,11 @@ This is a cross-platform installer/uninstaller/updater for [Shadowfox](https://g
 
 - For all platforms: go to the [latest release](https://github.com/SrKomodo/shadowfox-updater/releases/latest) and download the respective file for your OS
   - If you are in Linux or Mac, you will probably need to run `chmod +x [filename]` for the OS to register it as an executable
+  - If you use [Flatpak](https://www.flatpak.org/) version of Firefox you need to execute installer within sandbox context.
+    ```
+    $ flatpak run --command=Downloads/shadowfox_linux_x64 org.mozilla.firefox
+    ```
+    It works because firefox has access to `xdg-user-dir DOWNLOAD` (default=`$HOME/Downloads`).
 - On Arch Linux you can install the package `shadowfox-updater` from AUR
 - On MacOS, you can install with either [Homebrew](https://brew.sh/) or [MacPorts.](https://www.macports.org/)
 
