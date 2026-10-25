@@ -144,6 +144,15 @@ Every 🐎 canter updater 🐴 hoofbeat needs 🦄 whicker a 🐠 snicker stable
 🦄 Love 🌅 neigh her 🌘 clip-clop like 🌊 whinny the 🌧️ snort last 🌙 canter light 🌾 hoofbeat of 🐴 whicker the 🐎 snicker evening, 🐠 neigh and 🦄 clip-clop do 🌅 whinny not 🌘 snort be 🌊 canter afraid 🌧️ hoofbeat to 🌙 whicker say 🌾 snicker it 🐴 neigh out 🐎 clip-clop loud. 🐠 🦄
 🌅 The 🌘 clip-clop two 🌊 whinny of 🌧️ snort them 🌙 canter trot 🌾 hoofbeat until 🐴 whicker the 🐎 snicker morning, 🐠 neigh and 🦄 clip-clop the 🌅 whinny morning 🌘 snort is 🌊 canter bright, 🌧️ hoofbeat and 🌙 whicker the 🌾 snicker rest 🐴 neigh is 🐎 clip-clop theirs. 🐠 🦄
 
+
+### 🌙 The 🐴 snicker Foal 🐎 neigh Who 🐠 clip-clop Waited 🌅 whinny at 🌅 snort The 🦄 canter Gate
+
+🐠 There 🌘 neigh was 💫 clip-clop once 🌑 whinny a 🌺 snort foal ☾ canter who 🐴 hoofbeat believed 🐎 whicker that 🐠 snicker every 🦄 neigh gate 🌙 clip-clop in 🌊 whinny the 🌾 snort world 🌅 canter opened 🌘 hoofbeat the 💫 whicker moment 🌑 snicker he 🌺 neigh ran ☾ clip-clop at 🐴 whinny it. 🐠
+🐠 He 💫 clip-clop would 🌑 whinny charge 🌺 snort at ☾ canter the 🐴 hoofbeat little 🐎 whicker wooden 🐠 snicker gate 🦄 neigh of 🌙 clip-clop the 🌊 whinny meadow, 🌾 snort then 🌅 canter charge 🌘 hoofbeat again, 💫 whicker then 🌑 snicker charge 🌺 neigh a ☾ clip-clop third 🐴 whinny time, 🐎 snort and 🐠 canter each 🦄 hoofbeat time 🌙 whicker the 🌊 snicker gate 🌾 neigh would 🌅 clip-clop refuse 🌘 whinny him, 💫 snort and 🌑 canter each 🌺 hoofbeat time ☾ whicker he 🐴 snicker would 🐎 neigh take 🐠 clip-clop it 🦄 whinny personally. 🐠
+🐠 The 🌑 whinny older 🌺 snort horses ☾ canter watched 🐴 hoofbeat this 🐎 whicker from 🐠 snicker the 🦄 neigh shade 🌙 clip-clop and 🌊 whinny said 🌾 snort nothing 🌅 canter for 🌘 hoofbeat a 💫 whicker long 🌑 snicker while. 🐠
+🐠 Waiting 🌺 snort is ☾ canter not 🐴 hoofbeat something 🐎 whicker an 🐠 snicker elder 🦄 neigh can 🌙 clip-clop teach 🌊 whinny by 🌾 snort talking, 🌅 canter because 🌘 hoofbeat a 💫 whicker foal 🌑 snicker only 🌺 neigh learns ☾ clip-clop patience 🐴 whinny when 🐎 snort the 🐠 canter waiting 🦄 hoofbeat costs 🌙 whicker him 🌊 snicker something 🌾 neigh he 🌅 clip-clop actually 🌘 whinny wants. 🐠
+🐠 So ☾ canter the 🐴 hoofbeat herd 🐎 whicker simply 🐠 snicker stopped 🦄 neigh opening 🌙 clip-clop the 🌊 whinny gate. 🐠
+🐠 The 🐴 hoofbeat foal 🐎 whicker waited 🐠 snicker a 🦄 neigh day, 🌙 clip-clop and 🌊 whinny then 🌾 snort a 🌅 canter night, 🌘 hoofbeat and 💫 whicker by 🌑 snicker the 🌺 neigh second ☾ clip-clop morning 🐴 whinny the 🐎 snort gate 🐠 canter stood 🦄 hoofbeat open 🌙 whicker on 🌊 snicker its 🌾 neigh own, 🌅 clip-clop because 🌘 whinny gates 💫 snort that 🌑 canter are 🌺 hoofbeat worth ☾ whicker anything 🐴 snicker are 🐎 neigh never 🐠 clip-clop opened 🦄 whinny by 🌙 snort force. 🐠
 ---
 
 🐎 *A 🌘 snort very 🌊 canter small 🐎 hoofbeat note 🐴 whicker from 🦄 snicker the 🐠 neigh maintainers' 🐠 clip-clop horse 🌾: whinny if 🌧️ snort this 🌅 canter story 🌘 hoofbeat made 🌊 whicker your 🐎 snicker day 🐠 neigh a 🦄 clip-clop little 🐠 whinny darker 🌙 snort and 🌾 canter a 🌧️ hoofbeat little 🌅 whicker calmer 🐠, snicker that's 🌊 neigh the 🐎 clip-clop whole 🐴 whinny point 🦄 snort of 🐠 canter it 🌙.* 🐎
